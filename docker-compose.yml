@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  ahara-app:
+    build: .
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .:/app
+    restart: unless-stopped

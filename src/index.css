@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@import "tailwindcss";
+/* Reset margin and padding for all elements */
+@theme {
+  /* custom font stacks */
+  --font-sans: "Open_Sans", sans‑serif;
+  --font-poppins: "Poppins", sans‑serif;
+  --font-inter: "Inter", sans‑serif;
+
+  /* responsive breakpoints */
+  --breakpoint-3xl: 1920px;
+
+  /* your new color palette */
+  --color-primary-bg: #F9FAFB;
+  --color-shiva-blue: #2E4A78;
+  --color-secondary-white: #FFFFFF;
+  --color-shiva-black: #1C2B39;
+  --color-shiva-white: #F5F5F5;
+  --color-nirvana-one: #7D8A96;
+  --color-nirvana-two: #ffffff33;
+  --color-nirvana-three: #5E6C84;
+
+  /* you can even override default spacings, etc. */
+  /* --spacing-72: 18rem; */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #F9FAFB;
+}
