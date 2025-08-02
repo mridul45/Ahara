@@ -3,11 +3,11 @@ import bg2 from '../assets/backgrounds/bg2.jpeg';
 import bgcard1 from '../assets/backgrounds/bg_card1.png';
 import bgcard2 from '../assets/backgrounds/bg_card2.png';
 import bgcard3 from '../assets/backgrounds/bg_card3.png';
-import logo from "../assets/logo/navlogo.png";
 import { useNavigate } from 'react-router-dom'
 import Footer from '../layouts/components/Footer';
+import Navbar from '../layouts/components/Navbar';
 
-// const WireframeScene = lazy(() => import('../components/wireframes/WireframeScene'));
+const MeditatingManModel = lazy(() => import('../components/wireframes/MeditatingMan'));
 const Brain = lazy(() => import('../components/wireframes/Humanbrain'));
 const HelperBotWireframe = lazy(() => import('../components/wireframes/Helperbot'));
 const ShivaWireframe = lazy(() => import('../components/wireframes/Shiva'));
@@ -23,26 +23,52 @@ function Landing() {
       >
 
 
-        {/* <Navbar t1={"About"} t2={"Vision"} t3={"Features"} t4={"Pricing"} t5={"Contact"} t6={"Signup/Login"} /> */}
+        <Navbar
+          t1={"About"}
+          t2={"Vision"}
+          t3={"Features"}
+          t4={"Pricing"}
+          t5={"Contact"}
+          t6={
+            <span
+              onClick={() => navigate("/login")}
+              className="cursor-pointer"
+            >
+              Signup/Login
+            </span>
+          }
+        />
 
-        <div className="h-[90%] w-[40%] flex flex-col items-center ml-[2.5rem] mt-[2rem] justify-center">
+        <div className="h-[80%] w-[40%] flex flex-col items-center ml-[2.5rem] mt-[2rem] justify-center relative top-[-12rem]">
           <h1 className="font-['Poppins'] font-semibold text-[2.7rem] text-primary-bg">Personalized</h1>
           <div className="w-full flex items-center justify-center bg-red-500] mt-[1.5rem]">
             <h2 className='font-["Poppins"] text-secondary-white w-[70%] text-[1.3rem] font-medium'>Get Personalized recommendations to find the right path to your mindfulness journey.</h2>
           </div>
 
-          <div className="w-[30%] h-[10%] mt-[2rem] bg-shiva-blue text-secondary-white flex items-center justify-center rounded-[30px] font-inter">Get Started</div>
+          <div
+            className="w-[30%] h-[10%] mt-[2rem] bg-shiva-blue text-secondary-white flex items-center justify-center rounded-[30px] font-inter hover:bg-secondary-white hover:text-shiva-blue hover:scale-110 transition-all duration-300 ease-in-out"
+          >
+            Get Started
+          </div>
 
         </div>
       </div>
 
       {/* <Card heading="About" text="Āhāra is your all-in-one wellness companion, blending personalized yoga and meditation guidance with smart, budget-friendly meal planning. By creating tailored routines and sourcing local ingredients based on your location, Āhāra helps you build healthy habits that fit your lifestyle. Whether you’re just starting your mindfulness journey or seeking deeper Zen practices, Āhāra’s dual modes offer approachable daily exercises and exclusive advanced teachings to nourish your body, calm your mind, and enrich your spirit." /> */}
-      <div className="mt-[2rem]">
-        {/* <Card heading="Vision" text="Āhāra’s vision is to make true wellness accessible to all by blending ancient spiritual practices with modern technology. Through intuitive yoga, meditation, and localized nutrition guidance, we empower individuals to lead balanced lives. Leveraging AI for real-time feedback and smart ingredient sourcing, Āhāra removes barriers to healthy living. Inspired by Lord Shiva’s harmony, our mission is to nurture a mindful community where the body, mind, and environment thrive together in simplicity and connection." /> */}
+      <div className="w-[80%] h-fit rounded-[10px] bg-secondary-white ml-auto mr-auto flex flex-col items-center justify-center shadow-sm relative top-[-2.3rem] p-[1rem] pb-[2rem]">
+        <h1 className='text-[2rem] font-poppins text-shiva-blue font-medium'>About</h1>
+        <hr className="w-[5%] text-shiva-black" />
+        <p className="text-justify font-inter text-shiva-black text-[1.1rem] w-[80%] mt-[1rem]">Ahara is an innovative healthtech platform that seamlessly blends cutting-edge AI with holistic wellness, empowering users to achieve true balance in body and mind. By integrating real-time yoga posture correction, hyper-personalized diet planning based on local and budget-friendly ingredients, and an intelligent conversational companion, Ahara transforms daily well-being into an engaging, supportive journey. With curated spiritual content in Zen Mode and a calming, modern user experience, Ahara sets a new standard for accessible, meaningful, and results-driven digital health solutions.</p>
+      </div>
+
+      <div className="w-[80%] h-fit rounded-[10px] bg-secondary-white ml-auto mr-auto flex flex-col items-center justify-center shadow-sm relative top-[-2.3rem] p-[1rem] pb-[2rem] mt-[1.3rem]">
+        <h1 className='text-[2rem] font-poppins text-shiva-blue font-medium'>Vision</h1>
+        <hr className="w-[5%] text-shiva-black" />
+        <p className="text-justify font-inter text-shiva-black text-[1.1rem] w-[80%] mt-[1rem]">Ahara’s vision is to redefine holistic well-being by leveraging advanced artificial intelligence to make health—physical, nutritional, and spiritual—accessible, personalized, and deeply engaging for everyone. We aspire to empower individuals with intuitive tools that nurture self-care, self-discovery, and continuous growth, all rooted in actionable insights and authentic mindfulness traditions. By harmoniously integrating innovation with ancient wisdom, Ahara envisions a world where every user can achieve lasting balance, empowered by technology that truly understands and supports their unique wellness journey.</p>
       </div>
 
       {/* <div style={{ width: "20%", height: "20%", background: "#fafafa" }}>
-        <WireframeScene width="100%" height="100%" />
+        <MeditatingManModel width="100%" height="100%" />
       </div> */}
       <h1 className="font-poppins font-semibold text-[2.7rem] text-shiva-blue text-center mt-[2rem]">Features</h1>
 
@@ -51,6 +77,7 @@ function Landing() {
         <div className="flex flex-row w-[100%] h-[40rem] bg-secondary-white rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
           <div className="w-[50%] h-[100%]">
             {/* <WireframeScene width="100%" height="100%" /> */}
+            <Brain width='100%' height='100%' />
           </div>
 
           <div className="w-[50%] h-[100%] flex flex-col items-center justify-center">
@@ -283,7 +310,7 @@ function Landing() {
         </div>
       </div>
 
-      <Footer/>
+      <Footer />
     </>
   )
 }
