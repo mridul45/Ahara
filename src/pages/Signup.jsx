@@ -8,7 +8,7 @@ function Signup() {
     return (
         <>
             <Authlayout>
-                <div className="bg-nirvana-three backdrop-blur-[16px] border border-nirvana-two rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.3)] w-[70%] h-[80%] flex flex-col items-center justify-center">
+                <div className="bg-secondary-white backdrop-blur-[16px] border border-nirvana-two rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.3)] w-[70%] h-[80%] flex flex-col items-center justify-center">
                     <h1 className="text-[2.7rem] font-['Poppins'] text-center text-shiva-black font-bold">Sign In or</h1>
                     <h1 className="text-[2.7rem] font-['Poppins'] text-center text-shiva-black font-bold">Create an Account</h1>
 
