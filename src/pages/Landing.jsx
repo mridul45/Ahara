@@ -34,7 +34,7 @@ function Landing() {
               onClick={() => navigate("/login")}
               className="cursor-pointer"
             >
-              This is SIgnup
+              Signup/Login
             </span>
           }
         />
