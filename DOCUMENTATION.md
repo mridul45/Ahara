@@ -82,5 +82,8 @@ This project is a production-ready React application bootstrapped with Vite and 
 - [React Documentation](https://react.dev/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/)
 
+## Hosted Link
+https://mridul45.github.io/Ahara/
+
 ---
 For further details, see comments in individual source files and configuration files.
