@@ -1,34 +1,113 @@
+/* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+/* Tailwind (v4 style) */
 @import "tailwindcss";
-/* Reset margin and padding for all elements */
-@theme {
-  /* custom font stacks */
-  --font-sans: "Open_Sans", sans‑serif;
-  --font-poppins: "Poppins", sans‑serif;
-  --font-inter: "Inter", sans‑serif;
 
-  /* responsive breakpoints */
+/* -------------------------------------------------------
+   Ahara Theme Tokens (light + dark-first palette)
+   These tokens align with the new landing page (slate 950 base,
+   cyan/teal/purple accents, glass surfaces, soft borders)
+-------------------------------------------------------- */
+@theme {
+  /* Fonts */
+  --font-sans: "Inter", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  --font-poppins: "Poppins", var(--font-sans);
+  --font-open: "Open Sans", var(--font-sans);
+
+  /* Breakpoints */
   --breakpoint-3xl: 1920px;
 
-  /* your new color palette */
-  --color-primary-bg: #F9FAFB;
-  --color-shiva-blue: #2E4A78;
+  /* Light palette (kept for future light mode) */
+  --color-primary-bg: #F9FAFB;           /* paper */
+  --color-shiva-blue: #2E4A78;           /* brand legacy */
   --color-secondary-white: #FFFFFF;
   --color-shiva-black: #1C2B39;
   --color-shiva-white: #F5F5F5;
   --color-nirvana-one: #7D8A96;
-  --color-nirvana-two: #ffffff33;
+  --color-nirvana-two: #ffffff33;        /* white/20 */
   --color-nirvana-three: #5E6C84;
 
-  /* you can even override default spacings, etc. */
-  /* --spacing-72: 18rem; */
+  /* ---------------------------------------------------
+     Dark palette (used by the landing page)
+  --------------------------------------------------- */
+  /* Neutrals */
+  --color-bg-dark: #020617;              /* slate-950 */
+  --color-surface-1: #0b1220;            /* deep panel */
+  --color-surface-2: #0f172a;            /* slate-900 */
+  --color-border-dark: rgba(255,255,255,0.08);
+  --color-text-primary: #e2e8f0;         /* slate-200 */
+  --color-text-secondary: #94a3b8;       /* slate-400 */
+
+  /* Brand accents (Tailwind parity) */
+  --color-teal-400: #2dd4bf;
+  --color-cyan-400: #22d3ee;
+  --color-purple-400: #a78bfa;
+  --color-emerald-500: #10b981;
+
+  /* Status dots */
+  --color-dot-teal: var(--color-teal-400);
+  --color-dot-cyan: var(--color-cyan-400);
+  --color-dot-purple: var(--color-purple-400);
+
+  /* Shadows & radii */
+  --shadow-brand: 0 10px 30px rgba(34, 211, 238, 0.20);
+  --radius-xl: 1rem;
+
+  /* Gradients used across the page */
+  --gradient-brand: linear-gradient(90deg, var(--color-teal-400), var(--color-cyan-400));
+  --gradient-zen: linear-gradient(90deg, var(--color-purple-400), var(--color-cyan-400));
+  --gradient-surface-glow: linear-gradient(135deg, rgba(45,212,191,0.10), rgba(34,211,238,0.10), rgba(167,139,250,0.10));
 }
 
+/* Base resets + default dark mode */
+* { box-sizing: border-box; }
+html { color-scheme: dark; scroll-behavior: smooth; }
 body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  background-color: #F9FAFB;
+  font-family: var(--font-sans);
+  background: var(--color-bg-dark);
+  color: var(--color-text-primary);
+}
+
+/* Selection color to match accents */
+::selection { background: color-mix(in oklab, var(--color-cyan-400) 30%, transparent); }
+
+/* Utility helpers (optional): these complement Tailwind classes */
+.glass {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--color-border-dark);
+  backdrop-filter: blur(10px);
+}
+.border-dark { border-color: var(--color-border-dark); }
+.bg-surface-1 { background: var(--color-surface-1); }
+.bg-surface-2 { background: var(--color-surface-2); }
+.text-subtle { color: var(--color-text-secondary); }
+.bg-brand-gradient { background-image: var(--gradient-brand); }
+.bg-zen-gradient { background-image: var(--gradient-zen); }
+.shadow-brand { box-shadow: var(--shadow-brand); }
+
+/* Button examples matching landing */
+.btn-brand {
+  background: var(--gradient-brand);
+  color: #0b1020;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-brand);
+}
+.btn-ghost {
+  background: rgba(255,255,255,0.05);
+  color: var(--color-text-primary);
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border-dark);
+}
+
+/* Optional: Light mode support if you ever switch to .light on <html> */
+html.light body {
+  background: var(--color-primary-bg);
+  color: #0f172a;
 }
