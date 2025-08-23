@@ -61,7 +61,9 @@
   --gradient-surface-glow: linear-gradient(135deg, rgba(45,212,191,0.10), rgba(34,211,238,0.10), rgba(167,139,250,0.10));
 }
 
-/* Base resets + default dark mode */
+/* -------------------------------------------------------
+   Base resets + default dark mode
+-------------------------------------------------------- */
 * { box-sizing: border-box; }
 html { color-scheme: dark; scroll-behavior: smooth; }
 body {
@@ -75,7 +77,9 @@ body {
 /* Selection color to match accents */
 ::selection { background: color-mix(in oklab, var(--color-cyan-400) 30%, transparent); }
 
-/* Utility helpers (optional): these complement Tailwind classes */
+/* -------------------------------------------------------
+   Utility helpers (complement Tailwind classes)
+-------------------------------------------------------- */
 .glass {
   background: rgba(255,255,255,0.05);
   border: 1px solid var(--color-border-dark);
@@ -89,7 +93,7 @@ body {
 .bg-zen-gradient { background-image: var(--gradient-zen); }
 .shadow-brand { box-shadow: var(--shadow-brand); }
 
-/* Button examples matching landing */
+/* Buttons */
 .btn-brand {
   background: var(--gradient-brand);
   color: #0b1020;
@@ -106,8 +110,176 @@ body {
   border: 1px solid var(--color-border-dark);
 }
 
-/* Optional: Light mode support if you ever switch to .light on <html> */
+/* -------------------------------------------------------
+   Light Mode Overrides
+-------------------------------------------------------- */
+html.light {
+  color-scheme: light;
+
+  /* Redefine theme tokens for light mode */
+  --color-bg-dark: #F1F5F9;              /* slate-100 */
+  --color-surface-1: #FFFFFF;            /* white */
+  --color-surface-2: #F9FAFB;            /* almost white */
+  --color-border-dark: rgba(0,0,0,0.09);
+  --color-text-primary: #0f172a;         /* slate-900 */
+  --color-text-secondary: #475569;       /* slate-600 */
+  --gradient-surface-glow: linear-gradient(135deg, rgba(45,212,191,0.1), rgba(34,211,238,0.1), rgba(167,139,250,0.1));
+}
+
 html.light body {
-  background: var(--color-primary-bg);
-  color: #0f172a;
+  background: var(--color-bg-dark);
+  color: var(--color-text-primary);
+}
+
+/* Override utility classes for light mode */
+html.light .glass {
+  background: rgba(255,255,255,0.5);
+  border-color: rgba(0,0,0,0.07);
+  backdrop-filter: blur(16px);
+}
+
+html.light .btn-ghost {
+  background: rgba(71, 85, 105, 0.05);
+  border-color: rgba(71, 85, 105, 0.1);
+  color: var(--color-text-primary);
+}
+html.light .btn-ghost:hover {
+  background: rgba(71, 85, 105, 0.08);
+  border-color: rgba(71, 85, 105, 0.2);
+}
+
+/* Override hardcoded tailwind classes for light mode */
+html.light .text-slate-100,
+html.light .text-slate-200 {
+  color: var(--color-text-primary);
+}
+html.light .text-slate-300 {
+  color: var(--color-text-secondary);
+}
+html.light .bg-white\/5 {
+  background-color: rgba(71, 85, 105, 0.05);
+}
+html.light .hover\:bg-white\/5:hover {
+  background-color: rgba(71, 85, 105, 0.08);
+}
+html.light .hover\:bg-white\/10:hover {
+  background-color: rgba(71, 85, 105, 0.1);
+}
+html.light .border-dark {
+  border-color: var(--color-border-dark);
+}
+html.light .hover\:border-cyan-400\/50:hover {
+  border-color: var(--color-cyan-400);
+  opacity: 0.7;
+}
+html.light .shadow-black\/20 {
+    --tw-shadow-color: rgba(0,0,0,0.1);
+}
+
+/* Adjust parallax background for light theme */
+html.light .u-perspective-900 .border-cyan-400\/10 {
+  border-color: rgba(34, 211, 238, 0.2);
+  background:
+    linear-gradient(transparent, rgba(255,255,255,0.3)),
+    repeating-linear-gradient(90deg, rgba(203, 213, 225, 0.5) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(0deg, rgba(203, 213, 225, 0.5) 0 1px, transparent 1px 24px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+
+/* -------------------------------------------------------
+   Ahara 3D + Motion Utilities (global)
+   Use these everywhere (Landing.jsx updated to reference them)
+-------------------------------------------------------- */
+
+/* Perspective helpers */
+.u-perspective-900  { perspective: 900px; }
+.u-perspective-1200 { perspective: 1200px; }
+
+/* 3D rendering + perf hints */
+.u-preserve-3d           { transform-style: preserve-3d; }
+.u-will-change-transform { will-change: transform; }
+
+/* Z-depth helpers (apply a translateZ) */
+.depth-z-10 { transform: translateZ(10px); }
+.depth-z-12 { transform: translateZ(12px); }
+.depth-z-14 { transform: translateZ(14px); }
+.depth-z-18 { transform: translateZ(18px); }
+.depth-z-20 { transform: translateZ(20px); }
+.depth-z-30 { transform: translateZ(30px); }
+
+/* Levitation animations */
+@keyframes levitate {
+  0%, 100% { transform: translateY(0) translateZ(var(--z, 0)); }
+  50%      { transform: translateY(-8px) translateZ(var(--z, 0)); }
+}
+@keyframes levitate-slow {
+  0%, 100% { transform: translateY(0) translateZ(var(--z, 0)); }
+  50%      { transform: translateY(-5px) translateZ(var(--z, 0)); }
+}
+.animate-levitate      { animation: levitate 6s ease-in-out infinite; }
+.animate-levitate-slow { animation: levitate-slow 8s ease-in-out infinite; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-levitate,
+  .animate-levitate-slow { animation: none !important; }
+  .u-will-change-transform { will-change: auto; }
+}
+
+/* 3D Background Effect */
+.background-3d-effect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  perspective: 1000px;
+  overflow: hidden;
+}
+
+.background-3d-effect::before,
+.background-3d-effect::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: moveBackground 20s infinite alternate ease-in-out;
+}
+
+.background-3d-effect::before {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--color-cyan-400), transparent 70%);
+  top: -10%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+.background-3d-effect::after {
+  width: 800px; /* Increased size */
+  height: 800px; /* Increased size */
+  background: radial-gradient(circle, rgba(100, 0, 100, 0.7), transparent 70%); /* Darker purple, more opaque */
+  bottom: -20%; /* Adjusted position */
+  right: -20%; /* Adjusted position */
+  animation-delay: 5s;
+  box-shadow: 0 0 150px 50px rgba(100, 0, 100, 0.8); /* Glowing effect */
+}
+
+@keyframes moveBackground {
+  0% {
+    transform: translateZ(-200px) translateX(0) translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateZ(0px) translateX(50px) translateY(-50px) rotate(45deg);
+  }
+  50% {
+    transform: translateZ(-200px) translateX(0) translateY(0) rotate(90deg);
+  }
+  75% {
+    transform: translateZ(0px) translateX(-50px) translateY(50px) rotate(135deg);
+  }
+  100% {
+    transform: translateZ(-200px) translateX(0) translateY(0) rotate(180deg);
+  }
 }

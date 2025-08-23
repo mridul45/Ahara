@@ -1,276 +1,49 @@
-import React, { useEffect, useRef, useState } from "react";
-
-/* -------------------------------------------
-   3D UTILITIES (no deps)
--------------------------------------------- */
-function Tilt3D({ children, className = "", max = 12, glare = true, shine = true }) {
-  const ref = useRef(null);
-  const [style, setStyle] = useState({ transform: "rotateX(0deg) rotateY(0deg) translateZ(0)" });
-
-  const handleMove = (e) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;  // 0..1
-    const py = (e.clientY - rect.top) / rect.height;  // 0..1
-    const rx = (py - 0.5) * -2 * max;                 // invert X for natural feel
-    const ry = (px - 0.5) * 2 * max;
-
-    setStyle({
-      transform: `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`,
-      "--mx": `${px * 100}%`,
-      "--my": `${py * 100}%`,
-    });
-  };
-
-  const handleLeave = () => {
-    setStyle({ transform: "rotateX(0deg) rotateY(0deg) translateZ(0)" });
-  };
-
-  return (
-    <div className={`group [perspective:1200px] will-change-transform ${className}`}>
-      <div
-        ref={ref}
-        onMouseMove={handleMove}
-        onMouseLeave={handleLeave}
-        className="relative transition-transform duration-300 [transform-style:preserve-3d]"
-        style={style}
-      >
-        {shine && (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            style={{
-              background:
-                "radial-gradient(500px circle at var(--mx) var(--my), rgba(255,255,255,0.20), transparent 40%)",
-              transform: "translateZ(30px)",
-            }}
-          />
-        )}
-        {glare && (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -inset-px rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            style={{
-              background:
-                "conic-gradient(from 180deg at var(--mx) var(--my), rgba(255,255,255,0.08), rgba(255,255,255,0.0) 30% 70%, rgba(255,255,255,0.08))",
-              filter: "blur(8px)",
-              transform: "translateZ(20px)",
-            }}
-          />
-        )}
-        <div className="[transform:translateZ(10px)] relative">{children}</div>
-      </div>
-    </div>
-  );
-}
-
-function DepthParallax() {
-  const [pos, setPos] = useState({ x: 0.5, y: 0.4 });
-  useEffect(() => {
-    const onMove = (e) => {
-      const x = e.clientX / window.innerWidth;
-      const y = e.clientY / window.innerHeight;
-      setPos({ x, y });
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
-  return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden [perspective:900px]">
-      {/* existing glows, now gently parallaxed */}
-      <div
-        className="absolute left-1/2 top-[-10%] -translate-x-1/2 h-[40rem] w-[40rem] rounded-full bg-cyan-500/20 blur-3xl"
-        style={{ transform: `translate3d(${(pos.x - 0.5) * 40}px, ${(pos.y - 0.5) * 40}px, 0)` }}
-      />
-      <div
-        className="absolute right-[-10%] bottom-[-10%] h-[35rem] w-[35rem] rounded-full bg-purple-500/10 blur-3xl"
-        style={{ transform: `translate3d(${(0.5 - pos.x) * 50}px, ${(0.5 - pos.y) * 50}px, 0)` }}
-      />
-      {/* a faint 3D grid plate */}
-      <div
-        className="absolute left-[8%] bottom-[6%] w-[32rem] h-[18rem] rounded-3xl border border-cyan-400/10"
-        style={{
-          transform: `rotateX(${(pos.y - 0.5) * 8}deg) rotateY(${(0.5 - pos.x) * 8}deg) translateZ(60px)`,
-          background:
-            "linear-gradient(transparent, rgba(0,0,0,0.3)), repeating-linear-gradient(90deg, rgba(12,25,35,0.5) 0 1px, transparent 1px 24px), repeating-linear-gradient(0deg, rgba(12,25,35,0.5) 0 1px, transparent 1px 24px)",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
-        }}
-      />
-    </div>
-  );
-}
-
-/* -------------------------------------------
-   NAV + FOOTER (unchanged)
--------------------------------------------- */
-const NAV = [
-  { label: "About", href: "#about" },
-  { label: "Vision", href: "#vision" },
-  { label: "Features", href: "#features" },
-  { label: "Zen Mode", href: "#zen" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Contact", href: "#contact" },
-];
-
-function Navbar() {
-  const [open, setOpen] = useState(false);
-  return (
-    <header className="sticky top-0 z-50 border-b border-dark backdrop-blur bg-surface-2">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <a href="#top" className="flex items-center gap-2">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black">A</span>
-            <span className="font-semibold tracking-wide text-slate-100">Ahara</span>
-          </a>
-
-          <nav className="hidden md:flex items-center gap-8">
-            {NAV.map((it) => (
-              <a
-                key={it.label}
-                href={it.href}
-                className="text-slate-300 hover:text-white transition-colors duration-200 relative group"
-              >
-                {it.label}
-                <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-brand-gradient transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
-          </nav>
-
-          <div className="hidden md:flex items-center gap-3">
-            <a
-              href="/login"
-              className="px-4 py-2 rounded-xl text-slate-100 border border-dark hover:border-cyan-400/50 transition-colors"
-            >
-              Login / Sign up
-            </a>
-            <a
-              href="#pricing"
-              className="px-4 py-2 rounded-xl bg-brand-gradient text-slate-900 font-semibold shadow-brand transition"
-            >
-              Try Zen Mode
-            </a>
-          </div>
-
-          <button
-            className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-200 hover:bg-white/5"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
-              {open ? (
-                <path fillRule="evenodd" d="M6.225 4.811a1 1 0 0 1 1.414 0L12 9.172l4.361-4.36a1 1 0 1 1 1.414 1.414L13.414 10.586l4.36 4.361a1 1 0 1 1-1.414 1.414L12 12l-4.361 4.361a1 1 0 0 1-1.414-1.414l4.36-4.361-4.36-4.36a1 1 0 0 1 0-1.415Z" clipRule="evenodd" />
-              ) : (
-                <path fillRule="evenodd" d="M3.75 5.25a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 6a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 6a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
-              )}
-            </svg>
-          </button>
-        </div>
-
-        {open && (
-          <div className="md:hidden border-t border-dark py-3">
-            <nav className="grid gap-2">
-              {NAV.map((it) => (
-                <a
-                  key={it.label}
-                  href={it.href}
-                  className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5"
-                  onClick={() => setOpen(false)}
-                >
-                  {it.label}
-                </a>
-              ))}
-              <a href="/login" className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5" onClick={() => setOpen(false)}>
-                Login / Sign up
-              </a>
-            </nav>
-          </div>
-        )}
-      </div>
-    </header>
-  );
-}
-
-function Footer() {
-  return (
-    <footer id="contact" className="border-t border-dark bg-surface-2">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid gap-10 md:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black">A</span>
-              <span className="font-semibold tracking-wide text-slate-100">Ahara</span>
-            </div>
-            <p className="mt-4 text-sm text-subtle max-w-xs">
-              A holistic wellness companion with AI-powered posture correction, personalized nutrition, and authentic mindfulness.
-            </p>
-          </div>
-          <div>
-            <h4 className="text-slate-200 font-semibold">Product</h4>
-            <ul className="mt-4 space-y-2 text-subtle">
-              <li><a href="#features" className="hover:text-white">Features</a></li>
-              <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
-              <li><a href="#zen" className="hover:text-white">Zen Mode</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-slate-200 font-semibold">Company</h4>
-            <ul className="mt-4 space-y-2 text-subtle">
-              <li><a href="#vision" className="hover:text-white">Vision</a></li>
-              <li><a href="#about" className="hover:text-white">About Ahara</a></li>
-              <li><a href="#contact" className="hover:text-white">Contact</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-slate-200 font-semibold">Follow</h4>
-            <div className="mt-4 flex gap-3">
-              {[
-                { label: "X / Twitter", path: "M5 3h14l-7 18L5 3z" },
-                { label: "GitHub", path: "M12 .5a12 12 0 0 0-3.79 23.4c.6.1.82-.25.82-.57v-2c-3.34.73-4-1.6-4-1.6-.55-1.4-1.34-1.77-1.34-1.77-1.09-.75.08-.74.08-.74 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.82 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.9 1.24 3.22 0 4.61-2.8 5.63-5.47 5.93.43.37.81 1.1.81 2.22v3.29c0 .31.21.67.82.56A12 12 0 0 0 12 .5Z" },
-                { label: "LinkedIn", path: "M4.98 3.5A2.5 2.5 0 1 0 5 8.5 2.5 2.5 0 0 0 4.98 3.5ZM3 9h4v12H3V9Zm7 0h3.8v1.64h.05c.53-1 1.83-2.06 3.76-2.06 4.02 0 4.76 2.65 4.76 6.1V21H18v-4.9c0-1.17-.02-2.67-1.63-2.67-1.64 0-1.89 1.28-1.89 2.6V21H10V9Z" },
-              ].map((ico) => (
-                <a key={ico.label} href="#" aria-label={ico.label} className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 text-slate-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
-                    <path d={ico.path} />
-                  </svg>
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="mt-10 border-t border-dark pt-6 text-center text-sm text-subtle">© {new Date().getFullYear()} Ahara. All rights reserved.</div>
-      </div>
-    </footer>
-  );
-}
-
-/* -------------------------------------------
-   FEATURE CARD (now 3D)
--------------------------------------------- */
-function FeatureCard({ title, desc, iconPath }) {
-  return (
-    <Tilt3D className="h-full">
-      <div className="group relative rounded-2xl border border-dark bg-surface-2 p-6 shadow-xl shadow-black/20 transition hover:shadow-brand">
-        <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-teal-400/10 via-cyan-500/10 to-purple-500/10 opacity-0 blur transition duration-500 group-hover:opacity-100" />
-        <div className="relative">
-          <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 [transform:translateZ(18px)]">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-6 w-6 text-cyan-400" fill="currentColor"><path d={iconPath} /></svg>
-          </div>
-          <h3 className="text-lg font-semibold text-slate-100 [transform:translateZ(14px)]">{title}</h3>
-          <p className="mt-2 text-subtle text-sm leading-relaxed [transform:translateZ(10px)]">{desc}</p>
-        </div>
-      </div>
-    </Tilt3D>
-  );
-}
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Tilt3D from "../utils/Tilt3D";
+import DepthParallax from "../utils/DepthParallax";
+import Navbar from "../layouts/components/Navbar";
+import Footer from "../layouts/components/Footer";
+import FeatureCard from "../components/FeatureCard";
 
 /* -------------------------------------------
    PAGE
 -------------------------------------------- */
 export default function Landing() {
+  const navigate = useNavigate();
+  const [theme, setTheme] = useState(() => {
+    // Initialize theme from local storage or system preference
+    if (typeof window !== 'undefined') {
+      const storedTheme = localStorage.getItem('theme');
+      if (storedTheme) {
+        return storedTheme;
+      }
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    return 'dark'; // Default to dark if not in browser environment
+  });
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('theme', 'dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
+  };
+
   return (
     <div id="top" className="min-h-screen scroll-smooth bg-[var(--color-bg-dark)] text-slate-200 selection:bg-cyan-500/30">
-      <Navbar />
+      <Navbar theme={theme} toggleTheme={toggleTheme} />
       <DepthParallax />
 
       {/* HERO */}
@@ -289,10 +62,10 @@ export default function Landing() {
                 Ahara unifies yoga & meditation tutorials, <span className="text-slate-200">real-time posture correction</span>, a <span className="text-slate-200">hyper-personalized diet planner</span> using local ingredients, and an engaging AI companion with memory.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a href="/login" className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">
+                <button onClick={handleLogin} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">
                   Get Started
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M13.5 4.5a1 1 0 0 1 1.707-.707l5 5a1 1 0 0 1 0 1.414l-5 5A1 1 0 0 1 13.5 14.5V13h-6a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h6V5.207Z"/></svg>
-                </a>
+                </button>
                 <a href="#features" className="inline-flex items-center justify-center gap-2 rounded-xl btn-ghost px-5 py-3 font-medium">
                   Explore Features
                 </a>
@@ -305,7 +78,7 @@ export default function Landing() {
             </div>
 
             {/* Right hero: 3D glass cards */}
-            <div className="relative [perspective:1200px]">
+            <div className="relative u-perspective-1200">
               <div className="absolute -inset-6 -z-10 rounded-3xl bg-[var(--gradient-surface-glow)] blur-2xl" />
 
               <div className="grid gap-4">
@@ -315,7 +88,7 @@ export default function Landing() {
                       <h3 className="font-semibold text-slate-100">Pose Accuracy</h3>
                       <span className="text-xs text-subtle">Live</span>
                     </div>
-                    <div className="mt-4 h-28 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-900 p-4 [transform:translateZ(14px)]">
+                    <div className="mt-4 h-28 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-900 p-4 depth-z-14">
                       <div className="flex h-full items-end gap-1">
                         {[60, 75, 68, 82, 90, 94, 97].map((v, i) => (
                           <div key={i} className="flex-1">
@@ -334,7 +107,7 @@ export default function Landing() {
                       <h3 className="font-semibold text-slate-100">Today’s Meal Plan</h3>
                       <span className="text-xs text-subtle">Within 10–12 km</span>
                     </div>
-                    <ul className="mt-3 grid gap-2 text-sm text-slate-300 [transform:translateZ(12px)]">
+                    <ul className="mt-3 grid gap-2 text-sm text-slate-300 depth-z-12">
                       <li className="flex items-center justify-between rounded-lg bg-white/5 p-2">
                         <span>Oats upma + curd</span>
                         <span className="text-xs text-subtle">₹</span>
@@ -404,6 +177,37 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* HOW IT WORKS */}
+      <section id="how-it-works" className="py-16 md:py-24 bg-surface-1">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">How It Works</h2>
+          <p className="mt-3 text-center text-subtle">A simple and effective journey to wellness.</p>
+
+          <div className="mt-10 grid gap-10 md:grid-cols-4">
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black text-2xl">1</div>
+              <h3 className="text-lg font-semibold text-slate-100">Sign Up</h3>
+              <p className="mt-2 text-subtle text-sm leading-relaxed">Create your account and set your wellness goals.</p>
+            </div>
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black text-2xl">2</div>
+              <h3 className="text-lg font-semibold text-slate-100">Practice</h3>
+              <p className="mt-2 text-subtle text-sm leading-relaxed">Follow guided sessions with real-time feedback.</p>
+            </div>
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black text-2xl">3</div>
+              <h3 className="text-lg font-semibold text-slate-100">Nourish</h3>
+              <p className="mt-2 text-subtle text-sm leading-relaxed">Get personalized meal plans for your needs.</p>
+            </div>
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black text-2xl">4</div>
+              <h3 className="text-lg font-semibold text-slate-100">Connect</h3>
+              <p className="mt-2 text-subtle text-sm leading-relaxed">Chat with your AI companion and track your progress.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ZEN MODE */}
       <section id="zen" className="py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -426,7 +230,7 @@ export default function Landing() {
               <Tilt3D>
                 <div className="rounded-2xl border border-dark glass p-6 animate-levitate">
                   <div className="text-sm text-slate-300">Monk-led mantra • 12 min</div>
-                  <div className="mt-3 h-36 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-900 [transform:translateZ(12px)]" />
+                  <div className="mt-3 h-36 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-900 depth-z-12" />
                   <p className="mt-3 text-xs text-subtle">Binaural serenity • Offline access • No ads</p>
                 </div>
               </Tilt3D>
@@ -441,7 +245,8 @@ export default function Landing() {
           <h2 className="text-center text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">Simple pricing</h2>
           <p className="mt-3 text-center text-subtle">Start free. Upgrade when you want the full experience.</p>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {/* Free */}
             <div className="relative rounded-3xl border border-dark bg-surface-2 p-8">
               <h3 className="text-xl font-semibold text-slate-100">Basic</h3>
               <p className="mt-1 text-subtle">Core tutorials, meal planner, and chat companion.</p>
@@ -452,11 +257,26 @@ export default function Landing() {
                 <li>• Personalized diet plan (basic)</li>
                 <li>• Meal tracker</li>
               </ul>
-              <a href="/login" className="mt-8 inline-flex w-full items-center justify-center rounded-xl btn-ghost px-5 py-3">Get started</a>
+              <button onClick={handleLogin} className="mt-8 inline-flex w-full items-center justify-center rounded-xl btn-ghost px-5 py-3">Get started</button>
             </div>
 
-            <div className="relative rounded-3xl border border-cyan-400/20 bg-surface-2 p-8 ring-1 ring-inset ring-cyan-400/10">
-              <div className="absolute right-6 top-6 rounded-full bg-brand-gradient px-3 py-1 text-xs font-semibold text-slate-900">Popular</div>
+            {/* Pro */}
+            <div className="relative rounded-3xl border border-purple-400/20 bg-surface-2 p-8 ring-1 ring-inset ring-purple-400/10">
+              <div className="absolute right-6 top-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 px-3 py-1 text-xs font-semibold text-slate-900">Most Popular</div>
+              <h3 className="text-xl font-semibold text-slate-100">Pro</h3>
+              <p className="mt-1 text-subtle">Everything in Basic, plus advanced features.</p>
+              <div className="mt-6 text-4xl font-black">₹199<span className="text-base font-medium text-subtle"> / month</span></div>
+              <ul className="mt-6 grid gap-2 text-sm text-slate-300">
+                <li>• Everything in Basic</li>
+                <li>• Real-time voice corrections</li>
+                <li>• Local ingredient optimizer</li>
+                <li>• Practice analytics & streaks</li>
+              </ul>
+              <button onClick={handleLogin} className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">Get Pro</button>
+            </div>
+
+            {/* Zen Mode */}
+            <div className="relative rounded-3xl border border-dark bg-surface-2 p-8">
               <h3 className="text-xl font-semibold text-slate-100">Zen Mode</h3>
               <p className="mt-1 text-subtle">Advanced content, voice coaching, and deeper analytics.</p>
               <div className="mt-6 text-4xl font-black">₹299<span className="text-base font-medium text-subtle"> / month</span></div>
@@ -467,7 +287,7 @@ export default function Landing() {
                 <li>• Practice analytics & streaks</li>
                 <li>• Offline mode</li>
               </ul>
-              <a href="/login" className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">Start Zen</a>
+              <button onClick={handleLogin} className="mt-8 inline-flex w-full items-center justify-center rounded-xl btn-ghost px-5 py-3">Start Zen</button>
             </div>
           </div>
         </div>
@@ -480,7 +300,7 @@ export default function Landing() {
             <h3 className="text-3xl font-bold text-slate-100">Ready to begin your practice?</h3>
             <p className="mt-2 text-subtle">Join Ahara and experience posture-perfect yoga, mindful nutrition, and a caring AI companion.</p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <a href="/login" className="inline-flex items-center justify-center rounded-xl bg-brand-gradient px-6 py-3 font-semibold text-slate-900 shadow-brand">Create free account</a>
+              <button onClick={handleLogin} className="inline-flex items-center justify-center rounded-xl bg-brand-gradient px-6 py-3 font-semibold text-slate-900 shadow-brand">Create free account</button>
               <a href="#features" className="inline-flex items-center justify-center rounded-xl btn-ghost px-6 py-3">Learn more</a>
             </div>
           </div>
@@ -488,20 +308,6 @@ export default function Landing() {
       </section>
 
       <Footer />
-
-      {/* tiny CSS for float animations */}
-      <style>{`
-        @keyframes levitate {
-          0%,100% { transform: translateY(0) translateZ(var(--z,0)); }
-          50%     { transform: translateY(-8px) translateZ(var(--z,0)); }
-        }
-        @keyframes levitate-slow {
-          0%,100% { transform: translateY(0) translateZ(var(--z,0)); }
-          50%     { transform: translateY(-5px) translateZ(var(--z,0)); }
-        }
-        .animate-levitate { animation: levitate 6s ease-in-out infinite; }
-        .animate-levitate-slow { animation: levitate-slow 8s ease-in-out infinite; }
-      `}</style>
     </div>
   );
 }
