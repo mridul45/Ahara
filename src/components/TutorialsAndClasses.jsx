@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, PlayCircle, Star, History, CalendarPlus, Zap, Clock3 } from 'lucide-react';
-
-import { continueWatching, liveClasses } from '../utils/classData';
+import { Clock, PlayCircle } from 'lucide-react';
 
 export const TutorialCard = ({ tutorial }) => (
     <Link to={`/details/${tutorial.id}`} className="group block glass rounded-xl overflow-hidden transition-all duration-300 hover:border-cyan-400/50 hover:-translate-y-1 u-will-change-transform u-preserve-3d animate-levitate-slow depth-z-10">

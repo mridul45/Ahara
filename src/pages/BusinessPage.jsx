@@ -4,7 +4,8 @@ import { Search, Video, Users, Sun, Moon, History, CalendarPlus, Zap, Clock3, Cl
 import Footer from '../layouts/components/Footer'; // Import the footer
 import { useTheme } from '../hooks/useTheme'; // Import the useTheme hook
 import { tutorials, instructors } from '../utils/appData'; // Import tutorials and instructors from appData
-import { continueWatching, liveClasses, TutorialCard, ContinueWatchingCard } from '../components/TutorialsAndClasses'; // Import moved components and data
+import { TutorialCard, ContinueWatchingCard } from '../components/TutorialsAndClasses';
+import { continueWatching, liveClasses } from '../utils/classData';
 
 const BusinessPage = () => {
   const [activeTab, setActiveTab] = useState('tutorials');

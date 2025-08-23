@@ -123,14 +123,15 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const GoalItem = ({ icon: Icon, text, current, target }) => {
+const GoalItem = ({ icon, text, current, target }) => {
     const progress = Math.min((current / target) * 100, 100);
     const isComplete = current >= target;
+    const IconComponent = icon;
 
     return (
         <li className="space-y-2">
             <div className="flex items-center gap-3 text-sm">
-                <Icon className={`h-5 w-5 ${isComplete ? 'text-teal-400' : 'text-cyan-400'}`} />
+                <IconComponent className={`h-5 w-5 ${isComplete ? 'text-teal-400' : 'text-cyan-400'}`} />
                 <span className={isComplete ? 'text-slate-400 line-through' : 'text-slate-300'}>{text}</span>
                 <span className="ml-auto font-mono text-xs text-subtle">{current}/{target}</span>
             </div>

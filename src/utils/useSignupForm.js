@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -60,7 +59,7 @@ export const useSignupForm = () => {
         setLoading(false);
         navigate("/onboarding"); // or /dashboard after signup
       }, 600);
-    } catch (err) {
+    } catch {
       setLoading(false);
       setErrors((p) => ({ ...p, form: "Signup failed. Please try again." }));
     }
