@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie
 } from 'recharts';
@@ -6,7 +6,6 @@ import {
   BoltIcon,
   FireIcon,
   UserGroupIcon,
-  ArrowTrendingUpIcon,
   PlusIcon,
   BellIcon,
   UserCircleIcon,
@@ -113,7 +112,6 @@ const DashboardCard = ({ children, className = "" }) => (
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    const data = payload[0].payload;
     const value = payload[0].value;
     const name = payload[0].name;
     return (
