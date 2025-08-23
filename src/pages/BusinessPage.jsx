@@ -1,177 +1,168 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo/navlogo.png';
-import { recommended, topPicks, trending, newAdditions } from '../utils/cardData';
+import { Search, Video, Users, Sun, Moon, History, CalendarPlus, Zap, Clock3, Clock, Star } from 'lucide-react';
+import Footer from '../layouts/components/Footer'; // Import the footer
+import { useTheme } from '../hooks/useTheme'; // Import the useTheme hook
+import { tutorials, instructors } from '../utils/appData'; // Import tutorials and instructors from appData
+import { TutorialCard, ContinueWatchingCard } from '../components/TutorialsAndClasses';
+import { continueWatching, liveClasses } from '../utils/classData';
 
-function BusinessPage() {
-  return (
-    <>
-      <div className="w-[100vw] h-fit flex flex-row items-center justify-evenly">
-        <div
-          className="w-[8%] h-[10rem] flex flex-row items-center bg-no-repeat bg-left bg-contain relative top-[-2rem]"
-          style={{ backgroundImage: `url(${logo})` }}
-        />
-        <input
-          type="text"
-          placeholder="Search for a tutorial..."
-          className="
-            w-[80%]
-            bg-slate-200
-            p-[1rem]
-            rounded-[20px]
-            relative
-            top-[-2rem]
-            font-inter
-            border-none
-            outline-none
-            focus:outline-none
-            focus:shadow-md
-            transition-shadow
-          "
-        />
-        <button className="bg-shiva-blue text-secondary-white font-inter relative top-[-2rem] pl-[2rem] pr-[2rem] pt-[1rem] pb-[1rem] border-none rounded-[5px]">
-          Search
-        </button>
-      </div>
+const BusinessPage = () => {
+  const [activeTab, setActiveTab] = useState('tutorials');
+  const { theme, toggleTheme } = useTheme(); // Use the theme hook
 
-      <hr className="w-[50vw] ml-auto mr-auto text-shiva-blue relative top-[-2rem]" />
+  const latestTutorials = [...tutorials].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
+  const popularTutorials = [...tutorials].sort((a, b) => b.popularity - a.popularity).slice(0, 4);
+  const quickTutorials = tutorials.filter(t => t.duration <= 20);
+  const mediumTutorials = tutorials.filter(t => t.duration > 20 && t.duration <= 45);
+  const longTutorials = tutorials.filter(t => t.duration > 45);
 
-      <h1 className="text-shiva-blue font-poppins font-bold text-center text-[2rem] mt-[2rem]">
-        Recommended for you
-      </h1>
-
-      <div className="w-[90%] h-fit flex flex-row mt-[3rem] ml-auto mr-auto">
-        {recommended.map((card) => (
-          <Link to={`/details/${card.id}`} key={card.id} className="w-[20%] h-full flex flex-col rounded-[10px] shadow-sm group transform transition-transform duration-300 ease-out transform-gpu will-change-transform hover:scale-105 hover:z-10 ml-[2rem] first:ml-0">
-            <div className="w-full h-[16rem] relative overflow-hidden rounded-t-[10px]">
-              <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url(${card.image})` }}
-                aria-hidden="true"
-              />
-              <button
-                aria-label="Play"
-                className="absolute inset-0 flex items-center justify-center opacity-0 scale-90 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100 pointer-events-none group-hover:pointer-events-auto focus:opacity-100 focus:scale-100 focus:pointer-events-auto focus:outline-none"
-              >
-                <div className="rounded-full p-3 bg-black/50 backdrop-blur-sm">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    className="w-8 h-8 text-white"
-                    fill="currentColor"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-              </button>
+  const renderTutorials = () => (
+    <div className="space-y-16 u-perspective-900">
+        <section>
+            <h2 className="text-3xl font-bold text-text-primary mb-6 flex items-center gap-2"><History className="text-cyan-400"/> Continue Watching</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {continueWatching.map(tutorial => <ContinueWatchingCard key={tutorial.id} tutorial={tutorial} />)}
             </div>
-            <h3 className="text-[1.3rem] font-medium text-shiva-black font-inter mx-auto mt-[1rem] text-center">
-              {card.title}
-            </h3>
-          </Link>
-        ))}
-      </div>
+        </section>
 
-      <h1 className="text-shiva-blue font-poppins font-bold text-center text-[2rem] mt-[4rem]">
-        Top Picks
-      </h1>
-
-      <div className="w-[90%] h-fit flex flex-row mt-[3rem] ml-auto mr-auto">
-        {topPicks.map((card) => (
-          <Link to={`/details/${card.id}`} key={card.id} className="w-[20%] h-full flex flex-col rounded-[10px] shadow-sm group transform transition-transform duration-300 ease-out transform-gpu will-change-transform hover:scale-105 hover:z-10 ml-[2rem] first:ml-0">
-            <div className="w-full h-[16rem] relative overflow-hidden rounded-t-[10px]">
-              <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url(${card.image})` }}
-                aria-hidden="true"
-              />
-              <button
-                aria-label="Play"
-                className="absolute inset-0 flex items-center justify-center opacity-0 scale-90 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100 pointer-events-none group-hover:pointer-events-auto focus:opacity-100 focus:scale-100 focus:pointer-events-auto focus:outline-none"
-              >
-                <div className="rounded-full p-3 bg-black/50 backdrop-blur-sm">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    className="w-8 h-8 text-white"
-                    fill="currentColor"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-              </button>
+        <section>
+            <h2 className="text-3xl font-bold text-text-primary mb-6 flex items-center gap-2"><CalendarPlus className="text-cyan-400"/> Latest Tutorials</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {latestTutorials.map(tutorial => <TutorialCard key={tutorial.id} tutorial={tutorial} />)}
             </div>
-            <h3 className="text-[1.3rem] font-medium text-shiva-black font-inter mx-auto mt-[1rem] text-center">
-              {card.title}
-            </h3>
-          </Link>
-        ))}
-      </div>
+        </section>
 
-      <h1 className="text-shiva-blue font-poppins font-bold text-center text-[2rem] mt-[4rem]">
-        Trending
-      </h1>
+        <section>
+            <h2 className="text-3xl font-bold text-text-primary mb-6 flex items-center gap-2"><Zap className="text-cyan-400"/> Most Popular</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {popularTutorials.map(tutorial => <TutorialCard key={tutorial.id} tutorial={tutorial} />)}
+            </div>
+        </section>
 
-      <div className="w-[90%] h-[60rem] ml-auto mr-auto mt-[2rem] flex flex-wrap justify-between">
-        {trending.map((card) => (
-            <div key={card.id} className="w-[49%] h-[49%] flex flex-row bg-secondary-white shadow-sm rounded-[8px] mb-4">
-                <div
-                    className="w-[45%] h-full bg-center bg-no-repeat bg-cover overflow-hidden rounded-l-[8px]"
-                    style={{ backgroundImage: `url(${card.image})` }}
-                />
-                <div className="w-[55%] h-full flex flex-col">
-                    <h3 className="font-poppins text-shiva-blue text-[1.3rem] font-semibold ml-[1rem] mt-[1rem]">
-                        {card.title}
-                    </h3>
-                    <hr className="w-[16%] ml-[1rem]" />
-                    <p className="text-justify ml-[1rem] w-[90%] mt-[1.4rem] font-inter text-shiva-black font-medium">
-                        {card.description}
-                    </p>
-                    <Link to={`/details/${card.id}`} className="w-[90%] bg-shiva-black ml-auto mr-auto p-[0.7rem] text-secondary-white font-inter mt-[1.6rem] border-none rounded-[10px] transform transition duration-200 ease-out hover:scale-105 active:scale-95 focus:outline-none hover:shadow-lg text-center">
-                        Explore
-                    </Link>
+        <section>
+            <h2 className="text-3xl font-bold text-text-primary mb-6 flex items-center gap-2"><Clock3 className="text-cyan-400"/> Browse by Duration</h2>
+            <div className="space-y-10">
+                <div>
+                    <h3 className="text-xl font-semibold text-text-primary mb-4">Quick Sessions (Under 20 mins)</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {quickTutorials.map(tutorial => <TutorialCard key={tutorial.id} tutorial={tutorial} />)}
+                    </div>
+                </div>
+                <div>
+                    <h3 className="text-xl font-semibold text-text-primary mb-4">Medium Sessions (20-45 mins)</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {mediumTutorials.map(tutorial => <TutorialCard key={tutorial.id} tutorial={tutorial} />)}
+                    </div>
+                </div>
+                <div>
+                    <h3 className="text-xl font-semibold text-text-primary mb-4">Long Sessions (45+ mins)</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {longTutorials.map(tutorial => <TutorialCard key={tutorial.id} tutorial={tutorial} />)}
+                    </div>
                 </div>
             </div>
-        ))}
-      </div>
-
-      <h1 className="text-shiva-blue font-poppins font-bold text-center text-[2rem] mt-[4rem]">
-        New Additions
-      </h1>
-
-      <div className="w-[90%] h-fit flex flex-row mt-[3rem] ml-auto mr-auto mb-[2rem]">
-        {newAdditions.map((card) => (
-          <Link to={`/details/${card.id}`} key={card.id} className="w-[20%] h-full flex flex-col rounded-[10px] shadow-sm group transform transition-transform duration-300 ease-out transform-gpu will-change-transform hover:scale-105 hover:z-10 ml-[2rem] first:ml-0">
-            <div className="w-full h-[16rem] relative overflow-hidden rounded-t-[10px]">
-              <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url(${card.image})` }}
-                aria-hidden="true"
-              />
-              <button
-                aria-label="Play"
-                className="absolute inset-0 flex items-center justify-center opacity-0 scale-90 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100 pointer-events-none group-hover:pointer-events-auto focus:opacity-100 focus:scale-100 focus:pointer-events-auto focus:outline-none"
-              >
-                <div className="rounded-full p-3 bg-black/50 backdrop-blur-sm">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    className="w-8 h-8 text-white"
-                    fill="currentColor"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-              </button>
-            </div>
-            <h3 className="text-[1.3rem] font-medium text-shiva-black font-inter mx-auto mt-[1rem] text-center">
-              {card.title}
-            </h3>
-          </Link>
-        ))}
-      </div>
-    </>
+        </section>
+    </div>
   );
-}
+
+  const renderLiveClasses = () => (
+    <div className="space-y-4">
+      {liveClasses.map(cls => (
+        <div key={cls.id} className="glass rounded-xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex-grow text-center md:text-left">
+            <h3 className="text-lg font-bold text-text-primary">{cls.title}</h3>
+            <p className="text-sm text-text-secondary">with {cls.instructor}</p>
+            <div className="flex items-center justify-center md:justify-start gap-4 text-xs text-text-secondary mt-2">
+              <span className="flex items-center gap-1"><Clock size={14} /> {cls.time} ({cls.duration} min)</span>
+              <span className="flex items-center gap-1"><Star size={14} /> {cls.difficulty}</span>
+            </div>
+          </div>
+          <button className="btn-brand w-full md:w-auto shrink-0">
+            Join Live
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-bg-dark text-text-primary relative overflow-hidden">
+      {/* New 3D Background Effect */}
+      <div className="background-3d-effect"></div>
+
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+
+        {/* Header */}
+        <header className="text-center my-12 relative">
+          <h1 className="text-4xl md:text-5xl font-bold bg-zen-gradient text-transparent bg-clip-text mb-4">
+            Explore Our Tutorials
+          </h1>
+          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+            Find the perfect session to fit your goals, schedule, and mood. New content added weekly.
+          </p>
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="absolute top-0 right-0 p-2 rounded-full bg-surface-2 text-text-primary hover:bg-surface-1 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
+        </header>
+
+        {/* Search & Tabs */}
+        <div className="mb-10">
+          <div className="relative max-w-2xl mx-auto mb-8">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" size={20} />
+            <input
+              type="text"
+              placeholder="Search for yoga, HIIT, meditation..."
+              className="w-full bg-surface-2 border border-dark rounded-full py-3 pl-12 pr-4 text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
+            />
+          </div>
+
+          <div className="flex justify-center items-center gap-4 p-1 rounded-full bg-surface-2 max-w-xs mx-auto">
+            <button
+              onClick={() => setActiveTab('tutorials')}
+              className={`w-full py-2 rounded-full text-sm font-semibold transition-colors ${activeTab === 'tutorials' ? 'bg-brand-gradient text-slate-900' : 'text-text-secondary hover:text-text-primary'}`}
+            >
+              <Video className="inline-block mr-2" size={16} />
+              Tutorials
+            </button>
+            <button
+              onClick={() => setActiveTab('live')}
+              className={`w-full py-2 rounded-full text-sm font-semibold transition-colors ${activeTab === 'live' ? 'bg-brand-gradient text-slate-900' : 'text-text-secondary hover:text-text-primary'}`}
+            >
+              <Users className="inline-block mr-2" size={16} />
+              Live Classes
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <main className="my-16">
+          {activeTab === 'tutorials' ? renderTutorials() : renderLiveClasses()}
+        </main>
+
+        {/* Meet the Instructors */}
+        <section className="my-16">
+            <h2 className="text-3xl font-bold text-center text-text-primary mb-10">Browse by Instructor</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {instructors.map(instructor => (
+                    <div key={instructor.id} className="text-center glass p-6 rounded-xl hover:border-cyan-400/50 border border-transparent transition-colors">
+                        <img src={instructor.image} alt={instructor.name} className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"/>
+                        <h3 className="text-xl font-bold text-text-primary">{instructor.name}</h3>
+                        <p className="text-text-secondary">{instructor.specialty}</p>
+                    </div>
+                ))}
+            </div>
+        </section>
+
+      </div>
+      <Footer />
+    </div>
+  );
+};
 
 export default BusinessPage;

@@ -1,318 +1,313 @@
-import React, { lazy } from 'react';
-import bg2 from '../assets/backgrounds/bg2.jpeg';
-import bgcard1 from '../assets/backgrounds/bg_card1.png';
-import bgcard2 from '../assets/backgrounds/bg_card2.png';
-import bgcard3 from '../assets/backgrounds/bg_card3.png';
-import { useNavigate } from 'react-router-dom'
-import Footer from '../layouts/components/Footer';
-import Navbar from '../layouts/components/Navbar';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Tilt3D from "../utils/Tilt3D";
+import DepthParallax from "../utils/DepthParallax";
+import Navbar from "../layouts/components/Navbar";
+import Footer from "../layouts/components/Footer";
+import FeatureCard from "../components/FeatureCard";
 
-const MeditatingManModel = lazy(() => import('../components/wireframes/MeditatingMan'));
-const Brain = lazy(() => import('../components/wireframes/Humanbrain'));
-const HelperBotWireframe = lazy(() => import('../components/wireframes/Helperbot'));
-const ShivaWireframe = lazy(() => import('../components/wireframes/Shiva'));
-
-
-function Landing() {
+/* -------------------------------------------
+   PAGE
+-------------------------------------------- */
+export default function Landing() {
   const navigate = useNavigate();
+  const [theme, setTheme] = useState(() => {
+    // Initialize theme from local storage or system preference
+    if (typeof window !== 'undefined') {
+      const storedTheme = localStorage.getItem('theme');
+      if (storedTheme) {
+        return storedTheme;
+      }
+      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    return 'dark'; // Default to dark if not in browser environment
+  });
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('theme', 'dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
+  };
+
   return (
-    <>
-      <div
-        className="h-[70vh] w-[100vw] bg-cover bg-no-repeat"
-        style={{ backgroundImage: `url(${bg2})` }}
-      >
+    <div id="top" className="min-h-screen scroll-smooth bg-[var(--color-bg-dark)] text-slate-200 selection:bg-cyan-500/30">
+      <Navbar theme={theme} toggleTheme={toggleTheme} />
+      <DepthParallax />
 
+      {/* HERO */}
+      <section className="relative">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-2 py-16 md:py-24">
+            <div className="flex flex-col justify-center">
+              <p className="inline-flex items-center gap-2 self-start rounded-full border border-dark bg-white/5 px-3 py-1 text-xs text-slate-300">
+                <span className="inline-block h-2 w-2 rounded-full bg-brand-gradient" />
+                AI-powered Wellness
+              </p>
+              <h1 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
+                Your holistic companion for <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">mind, body, and nourishment</span>
+              </h1>
+              <p className="mt-5 max-w-xl text-subtle">
+                Ahara unifies yoga & meditation tutorials, <span className="text-slate-200">real-time posture correction</span>, a <span className="text-slate-200">hyper-personalized diet planner</span> using local ingredients, and an engaging AI companion with memory.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <button onClick={handleLogin} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">
+                  Get Started
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M13.5 4.5a1 1 0 0 1 1.707-.707l5 5a1 1 0 0 1 0 1.414l-5 5A1 1 0 0 1 13.5 14.5V13h-6a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h6V5.207Z"/></svg>
+                </button>
+                <a href="#features" className="inline-flex items-center justify-center gap-2 rounded-xl btn-ghost px-5 py-3 font-medium">
+                  Explore Features
+                </a>
+              </div>
+              <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-subtle">
+                <div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-teal-400" /> Real-time voice feedback</div>
+                <div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-cyan-400" /> Local, budget-friendly meals</div>
+                <div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-purple-400" /> Zen Mode content</div>
+              </div>
+            </div>
 
-        <Navbar
-          t1={"About"}
-          t2={"Vision"}
-          t3={"Features"}
-          t4={"Pricing"}
-          t5={"Contact"}
-          t6={
-            <span
-              onClick={() => navigate("/login")}
-              className="cursor-pointer"
-            >
-              Signup/Login
-            </span>
-          }
-        />
+            {/* Right hero: 3D glass cards */}
+            <div className="relative u-perspective-1200">
+              <div className="absolute -inset-6 -z-10 rounded-3xl bg-[var(--gradient-surface-glow)] blur-2xl" />
 
-        <div className="h-[80%] w-[40%] flex flex-col items-center ml-[2.5rem] mt-[2rem] justify-center relative top-[-12rem]">
-          <h1 className="font-['Poppins'] font-semibold text-[2.7rem] text-primary-bg">Personalized</h1>
-          <div className="w-full flex items-center justify-center bg-red-500] mt-[1.5rem]">
-            <h2 className='font-["Poppins"] text-secondary-white w-[70%] text-[1.3rem] font-medium'>Get Personalized recommendations to find the right path to your mindfulness journey.</h2>
+              <div className="grid gap-4">
+                <Tilt3D>
+                  <div className="rounded-2xl border border-dark glass p-5 animate-levitate" style={{ "--z": "0px" }}>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-slate-100">Pose Accuracy</h3>
+                      <span className="text-xs text-subtle">Live</span>
+                    </div>
+                    <div className="mt-4 h-28 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-900 p-4 depth-z-14">
+                      <div className="flex h-full items-end gap-1">
+                        {[60, 75, 68, 82, 90, 94, 97].map((v, i) => (
+                          <div key={i} className="flex-1">
+                            <div className="mx-auto w-3 rounded bg-cyan-500/70" style={{ height: `${Math.max(18, v / 1.4)}%` }} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="mt-3 text-xs text-subtle">AI posture correction progressively improves your alignment.</p>
+                  </div>
+                </Tilt3D>
+
+                <Tilt3D>
+                  <div className="rounded-2xl border border-dark glass p-5 animate-levitate-slow" style={{ "--z": "0px" }}>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-slate-100">Today’s Meal Plan</h3>
+                      <span className="text-xs text-subtle">Within 10–12 km</span>
+                    </div>
+                    <ul className="mt-3 grid gap-2 text-sm text-slate-300 depth-z-12">
+                      <li className="flex items-center justify-between rounded-lg bg-white/5 p-2">
+                        <span>Oats upma + curd</span>
+                        <span className="text-xs text-subtle">₹</span>
+                      </li>
+                      <li className="flex items-center justify-between rounded-lg bg-white/5 p-2">
+                        <span>Moong dal khichdi</span>
+                        <span className="text-xs text-subtle">₹₹</span>
+                      </li>
+                      <li className="flex items-center justify-between rounded-lg bg-white/5 p-2">
+                        <span>Grilled paneer salad</span>
+                        <span className="text-xs text-subtle">₹₹</span>
+                      </li>
+                    </ul>
+                    <p className="mt-3 text-xs text-subtle">Ingredients matched to your location and budget.</p>
+                  </div>
+                </Tilt3D>
+              </div>
+            </div>
           </div>
-
-          <div
-            className="w-[30%] h-[10%] mt-[2rem] bg-shiva-blue text-secondary-white flex items-center justify-center rounded-[30px] font-inter hover:bg-secondary-white hover:text-shiva-blue hover:scale-110 transition-all duration-300 ease-in-out"
-          >
-            Get Started
-          </div>
-
         </div>
-      </div>
+      </section>
 
-      {/* <Card heading="About" text="Āhāra is your all-in-one wellness companion, blending personalized yoga and meditation guidance with smart, budget-friendly meal planning. By creating tailored routines and sourcing local ingredients based on your location, Āhāra helps you build healthy habits that fit your lifestyle. Whether you’re just starting your mindfulness journey or seeking deeper Zen practices, Āhāra’s dual modes offer approachable daily exercises and exclusive advanced teachings to nourish your body, calm your mind, and enrich your spirit." /> */}
-      <div className="w-[80%] h-fit rounded-[10px] bg-secondary-white ml-auto mr-auto flex flex-col items-center justify-center shadow-sm relative top-[-2.3rem] p-[1rem] pb-[2rem]">
-        <h1 className='text-[2rem] font-poppins text-shiva-blue font-medium'>About</h1>
-        <hr className="w-[5%] text-shiva-black" />
-        <p className="text-justify font-inter text-shiva-black text-[1.1rem] w-[80%] mt-[1rem]">Ahara is an innovative healthtech platform that seamlessly blends cutting-edge AI with holistic wellness, empowering users to achieve true balance in body and mind. By integrating real-time yoga posture correction, hyper-personalized diet planning based on local and budget-friendly ingredients, and an intelligent conversational companion, Ahara transforms daily well-being into an engaging, supportive journey. With curated spiritual content in Zen Mode and a calming, modern user experience, Ahara sets a new standard for accessible, meaningful, and results-driven digital health solutions.</p>
-      </div>
+      {/* ABOUT / VISION */}
+      <section id="about" className="py-16 md:py-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">What is Ahara?</h2>
+          <p className="mx-auto mt-4 max-w-3xl text-subtle">
+            A next-gen wellness platform that blends modern AI with authentic mindfulness. Practice yoga, meditate, eat better, and chat with a caring AI companion that remembers your preferences.
+          </p>
+        </div>
+      </section>
 
-      <div className="w-[80%] h-fit rounded-[10px] bg-secondary-white ml-auto mr-auto flex flex-col items-center justify-center shadow-sm relative top-[-2.3rem] p-[1rem] pb-[2rem] mt-[1.3rem]">
-        <h1 className='text-[2rem] font-poppins text-shiva-blue font-medium'>Vision</h1>
-        <hr className="w-[5%] text-shiva-black" />
-        <p className="text-justify font-inter text-shiva-black text-[1.1rem] w-[80%] mt-[1rem]">Ahara’s vision is to redefine holistic well-being by leveraging advanced artificial intelligence to make health—physical, nutritional, and spiritual—accessible, personalized, and deeply engaging for everyone. We aspire to empower individuals with intuitive tools that nurture self-care, self-discovery, and continuous growth, all rooted in actionable insights and authentic mindfulness traditions. By harmoniously integrating innovation with ancient wisdom, Ahara envisions a world where every user can achieve lasting balance, empowered by technology that truly understands and supports their unique wellness journey.</p>
-      </div>
-
-      {/* <div style={{ width: "20%", height: "20%", background: "#fafafa" }}>
-        <MeditatingManModel width="100%" height="100%" />
-      </div> */}
-      <h1 className="font-poppins font-semibold text-[2.7rem] text-shiva-blue text-center mt-[2rem]">Features</h1>
-
-      <div className="flex flex-col w-[80%] ml-auto mr-auto mt-[3rem]">
-
-        <div className="flex flex-row w-[100%] h-[40rem] bg-secondary-white rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
-          <div className="w-[50%] h-[100%]">
-            {/* <WireframeScene width="100%" height="100%" /> */}
-            <Brain width='100%' height='100%' />
-          </div>
-
-          <div className="w-[50%] h-[100%] flex flex-col items-center justify-center">
-            <h1 className='text-[2rem] font-medium font-poppins text-shiva-black'>Yoga and Meditation Tutorial</h1>
-            <hr className="w-[27%] mx-auto mt-[0.2rem]" />
-            <p className="text-justify w-[80%] font-inter text-[1.2rem] mt-[4rem] text-nirvana-three">Our Yoga & Meditation Tutorials deliver on-demand, expert-led sessions for every level, from beginners to advanced practitioners. Select from quick 5-minute energizers to full 60-minute flows focused on strength, flexibility, or stress relief. Each tutorial offers clear, step-by-step guidance in both yoga asanas and mindfulness practices. Track your completed sessions, earn achievement badges, and access your personal progress dashboard—so you can cultivate consistency and growth, whether you’re at home, the office, or traveling.</p>
+      <section id="vision" className="py-2">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-dark bg-surface-2 p-8 md:p-12">
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="md:col-span-2">
+                <h3 className="text-2xl font-semibold text-slate-100">Our Vision</h3>
+                <p className="mt-3 text-subtle">
+                  Enable sustainable habit change by removing real-world barriers: real-time pose feedback, location-aware meal planning, and delightful guidance that feels like a companion—not an app.
+                </p>
+              </div>
+              <ul className="grid gap-3 text-sm text-slate-300">
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-teal-400"/> AI-driven personalization</li>
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-cyan-400"/> Integrated mind-body-nutrition</li>
+                <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-purple-400"/> Authentic spiritual content</li>
+              </ul>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div className="mt-[1rem] flex flex-row w-[100%] h-[40rem] bg-secondary-white rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
-          <div className="w-[50%] h-[100%] flex flex-col items-center justify-center">
-            <h1 className='text-[2rem] font-medium font-poppins text-shiva-black'>Ahara Intelligence</h1>
-            <hr className="w-[20%] mx-auto mt-[0.2rem]" />
-            <p className="text-justify w-[80%] font-inter text-[1.2rem] mt-[4rem] text-nirvana-three">Our AI-powered meal planner taps into live inventory and pricing data from grocery stores and markets within a 10–15 km radius of your home to identify the freshest, most affordable ingredients near you. By combining this local sourcing intelligence with your personal profile—calorie targets, dietary preferences, budget constraints, and cooking equipment—Āhāra generates a fully customized week-long diet chart. Each plan comes with a streamlined shopping list, cost estimates, nutrient-balanced recipes, and instant substitutions if an item is unavailable, making it effortless to eat well on time and on budget.</p>
-          </div>
+      {/* FEATURES GRID */}
+      <section id="features" className="py-16 md:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">Everything you need in one place</h2>
+          <p className="mt-3 text-center text-subtle">From posture to plates to peace of mind—beautifully integrated.</p>
 
-          <div className="w-[50%] h-[100%]">
-            <Brain width='100%' height='100%' />
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <FeatureCard title="Yoga & Meditation Tutorials" desc="Guided sessions for all levels with calm visuals and mindful pacing." iconPath="M12 3a9 9 0 1 0 9 9 9.01 9.01 0 0 0-9-9Zm0 4a3 3 0 1 1-3 3 3 3 0 0 1 3-3Zm0 12a7 7 0 0 1-5.65-2.82A5 5 0 0 1 12 13a5 5 0 0 1 5.65 3.18A7 7 0 0 1 12 19Z" />
+            <FeatureCard title="Real-time Posture Correction" desc="Vision AI gives instant voice & visual cues as you practice." iconPath="M4 4h16v4H4V4Zm0 6h10v10H4V10Zm12 6h4v4h-4v-4Z" />
+            <FeatureCard title="Personalized Diet Plans" desc="Smart plans based on your goals, preferences, and routines." iconPath="M4 7h16v2H4V7Zm0 4h16v2H4v-2Zm0 4h10v2H4v-2Z" />
+            <FeatureCard title="Local Ingredient Sourcing" desc="Find affordable ingredients available within 10–12 km." iconPath="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.86-3.14-7-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z" />
+            <FeatureCard title="AI Companion with Memory" desc="Chat with a companion that learns your style and keeps context." iconPath="M12 3a9 9 0 0 0-9 9 9.01 9.01 0 0 0 6 8.485V21l3-1 3 1v-.515A9.01 9.01 0 0 0 21 12a9 9 0 0 0-9-9Z" />
+            <FeatureCard title="AI-powered Meal Tracker" desc="Log meals effortlessly and get adaptive nutrition nudges." iconPath="M7 4h10v2H7V4Zm-2 4h14v12H5V8Zm4 2v8h2v-8H9Zm4 0v8h2v-8h-2Z" />
           </div>
         </div>
+      </section>
 
-        <div className="mt-[1rem] flex flex-row w-[100%] h-[40rem] bg-secondary-white rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
+      {/* HOW IT WORKS */}
+      <section id="how-it-works" className="py-16 md:py-24 bg-surface-1">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">How It Works</h2>
+          <p className="mt-3 text-center text-subtle">A simple and effective journey to wellness.</p>
 
-          <div className="w-[50%] h-[100%]">
-            <HelperBotWireframe width='100%' height='100%' />
+          <div className="mt-10 grid gap-10 md:grid-cols-4">
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black text-2xl">1</div>
+              <h3 className="text-lg font-semibold text-slate-100">Sign Up</h3>
+              <p className="mt-2 text-subtle text-sm leading-relaxed">Create your account and set your wellness goals.</p>
+            </div>
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black text-2xl">2</div>
+              <h3 className="text-lg font-semibold text-slate-100">Practice</h3>
+              <p className="mt-2 text-subtle text-sm leading-relaxed">Follow guided sessions with real-time feedback.</p>
+            </div>
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black text-2xl">3</div>
+              <h3 className="text-lg font-semibold text-slate-100">Nourish</h3>
+              <p className="mt-2 text-subtle text-sm leading-relaxed">Get personalized meal plans for your needs.</p>
+            </div>
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black text-2xl">4</div>
+              <h3 className="text-lg font-semibold text-slate-100">Connect</h3>
+              <p className="mt-2 text-subtle text-sm leading-relaxed">Chat with your AI companion and track your progress.</p>
+            </div>
           </div>
-
-          <div className="w-[50%] h-[100%] flex flex-col items-center justify-center">
-            <h1 className='text-[2rem] font-medium font-poppins text-shiva-black'>PosturePerfect™: AI-Powered Alignment</h1>
-            <hr className="w-[30%] mx-auto mt-[0.2rem]" />
-            <p className="text-justify w-[80%] font-inter text-[1.2rem] mt-[4rem] text-nirvana-three">Our AI-Driven Posture Correction uses real-time computer vision to analyze your yoga and meditation poses as you practice. You’ll receive instant, on-screen feedback—highlighting misaligned joints and suggesting precise adjustments—so you can build strength and flexibility safely, even when you’re training solo.</p>
-          </div>
-
         </div>
+      </section>
 
-        <div className="mt-[1rem] flex flex-row w-[100%] h-[40rem] bg-shiva-blue rounded-[12px] shadow-[0_4px_20px_rgba(46,74,120,0.5)]">
-
-          <div className="w-[50%] h-[100%] flex flex-col items-center justify-center">
-            <h1 className='text-[2rem] font-medium font-poppins text-primary-bg'>The Zen Mode</h1>
-            <hr className="w-[15%] mx-auto mt-[0.2rem] text-primary-bg" />
-            <ul className="list-none flex flex-col items-center justify-center p-[2rem] w-[100%] text-justify text-secondary-white text-[1.1rem] font-light">
-              <li className='font-inter'>Access exclusive, monastery‑led meditation sessions recorded in sacred spaces—immerse yourself in authentic, time‑tested practices.</li>
-              <li className='mt-[1.5rem] font-inter'>Unlock “Sound of Silence” background tracks, engineered to block distractions and guide your mind into profound stillness.</li>
-              <li className='mt-[1.5rem] font-inter'>Follow step‑by‑step chakra and mantra sequences voiced by temple priests—each session designed to align body, mind, and spirit.</li>
-              <li className='mt-[1.5rem] font-inter'>AI‑tuned pranayama routines that sense your stress levels and adjust pacing in real‑time for optimal relaxation.</li>
-              <li className='mt-[1.5rem] font-inter'>Gentle, customizable notifications that prompt you to pause, reflect, or perform short ritual practices—keeping your Zen practice consistent all day.</li>
-            </ul>
+      {/* ZEN MODE */}
+      <section id="zen" className="py-16 md:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-3xl border border-cyan-400/20 bg-surface-2 p-8 md:p-12">
+            <div className="absolute right-[-10%] top-[-10%] h-72 w-72 rounded-full bg-purple-500/20 blur-3xl" aria-hidden />
+            <div className="grid items-center gap-10 md:grid-cols-2">
+              <div>
+                <h3 className="text-3xl font-bold text-slate-100">Zen Mode</h3>
+                <p className="mt-3 text-subtle">Unlock advanced meditations, sutras, and mantras taught by verified monastic teachers. Designed for deeper practice and stillness.</p>
+                <ul className="mt-4 grid gap-2 text-sm text-slate-300">
+                  <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-purple-400"/> Authentic spiritual content</li>
+                  <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-cyan-400"/> Progressive courses & rituals</li>
+                  <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-teal-400"/> Distraction-free mode</li>
+                </ul>
+                <div className="mt-6 flex gap-3">
+                  <a href="#pricing" className="inline-flex items-center justify-center rounded-xl bg-zen-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">Get Zen Mode</a>
+                  <a href="#features" className="inline-flex items-center justify-center rounded-xl btn-ghost px-5 py-3">See features</a>
+                </div>
+              </div>
+              <Tilt3D>
+                <div className="rounded-2xl border border-dark glass p-6 animate-levitate">
+                  <div className="text-sm text-slate-300">Monk-led mantra • 12 min</div>
+                  <div className="mt-3 h-36 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-900 depth-z-12" />
+                  <p className="mt-3 text-xs text-subtle">Binaural serenity • Offline access • No ads</p>
+                </div>
+              </Tilt3D>
+            </div>
           </div>
-
-          <div className="w-[50%] h-[100%]">
-            <ShivaWireframe width='100%' height='100%' />
-          </div>
-
         </div>
-      </div>
+      </section>
 
-      <h1 className="font-poppins font-semibold text-[2.7rem] text-shiva-blue text-center mt-[5rem]">Pricing</h1>
+      {/* PRICING */}
+      <section id="pricing" className="py-16 md:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-center text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">Simple pricing</h2>
+          <p className="mt-3 text-center text-subtle">Start free. Upgrade when you want the full experience.</p>
 
-      <div className="h-[50rem] w-[80%] ml-auto mr-auto mt-[2rem] flex items-center justify-between">
-        <div className="group relative h-[30rem] w-[32%] rounded-[10px] overflow-hidden
-                shadow-[0_10px_30px_rgba(0,0,0,0.3)]
-                transition-all duration-300
-                flex flex-col items-center justify-center">
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {/* Free */}
+            <div className="relative rounded-3xl border border-dark bg-surface-2 p-8">
+              <h3 className="text-xl font-semibold text-slate-100">Basic</h3>
+              <p className="mt-1 text-subtle">Core tutorials, meal planner, and chat companion.</p>
+              <div className="mt-6 text-4xl font-black">₹0<span className="text-base font-medium text-subtle"> / forever</span></div>
+              <ul className="mt-6 grid gap-2 text-sm text-slate-300">
+                <li>• Yoga & meditation library (starter)</li>
+                <li>• AI posture tips (lite)</li>
+                <li>• Personalized diet plan (basic)</li>
+                <li>• Meal tracker</li>
+              </ul>
+              <button onClick={handleLogin} className="mt-8 inline-flex w-full items-center justify-center rounded-xl btn-ghost px-5 py-3">Get started</button>
+            </div>
 
-          {/* Background image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${bgcard1})` }}
-          />
+            {/* Pro */}
+            <div className="relative rounded-3xl border border-purple-400/20 bg-surface-2 p-8 ring-1 ring-inset ring-purple-400/10">
+              <div className="absolute right-6 top-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 px-3 py-1 text-xs font-semibold text-slate-900">Most Popular</div>
+              <h3 className="text-xl font-semibold text-slate-100">Pro</h3>
+              <p className="mt-1 text-subtle">Everything in Basic, plus advanced features.</p>
+              <div className="mt-6 text-4xl font-black">₹199<span className="text-base font-medium text-subtle"> / month</span></div>
+              <ul className="mt-6 grid gap-2 text-sm text-slate-300">
+                <li>• Everything in Basic</li>
+                <li>• Real-time voice corrections</li>
+                <li>• Local ingredient optimizer</li>
+                <li>• Practice analytics & streaks</li>
+              </ul>
+              <button onClick={handleLogin} className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">Get Pro</button>
+            </div>
 
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/40
-                  group-hover:bg-black/70
-                  transition-colors duration-300" />
-
-          {/* Title container */}
-          <div className="relative z-10 flex flex-col items-center w-full">
-            {/* Default label (slides up & fades out) */}
-            <h2 className="font-poppins font-semibold text-[2rem] text-white
-                   transition-transform duration-300
-                   group-hover:-translate-y-[40px] group-hover:opacity-0">
-              Basic
-            </h2>
-
-            {/* Hover label (slides up into view) */}
-            <h2 className="absolute inset-0 flex items-center justify-center
-                   font-poppins font-semibold text-[2rem] text-white
-                   transition-transform duration-300
-                   group-hover:-translate-y-[9rem] group-hover:opacity-100
-                   opacity-0">
-              $5/Month
-            </h2>
-
-            {/* Underline (slides up with default) */}
-            <hr className="w-[10%] border-white mt-2 w-[8%]
-                   transition-transform duration-300
-                   group-hover:-translate-y-[40px] group-hover:opacity-0" />
+            {/* Zen Mode */}
+            <div className="relative rounded-3xl border border-dark bg-surface-2 p-8">
+              <h3 className="text-xl font-semibold text-slate-100">Zen Mode</h3>
+              <p className="mt-1 text-subtle">Advanced content, voice coaching, and deeper analytics.</p>
+              <div className="mt-6 text-4xl font-black">₹299<span className="text-base font-medium text-subtle"> / month</span></div>
+              <ul className="mt-6 grid gap-2 text-sm text-slate-300">
+                <li>• Advanced monk-led meditations</li>
+                <li>• Real-time voice corrections</li>
+                <li>• Local ingredient optimizer</li>
+                <li>• Practice analytics & streaks</li>
+                <li>• Offline mode</li>
+              </ul>
+              <button onClick={handleLogin} className="mt-8 inline-flex w-full items-center justify-center rounded-xl btn-ghost px-5 py-3">Start Zen</button>
+            </div>
           </div>
-
-          {/* Hidden list */}
-          <ul className="list-disc absolute inset-0 flex flex-col items-start justify-center
-                 w-full px-8 space-y-2 text-white
-                 opacity-0 pointer-events-none
-                 group-hover:opacity-100 group-hover:pointer-events-auto
-                 transition-opacity duration-500">
-            <li className="ml-4 font-inter">On Demand Yoga & Meditation Tutorials</li>
-            <li className="ml-4 font-inter">Customized dashboard</li>
-            <li className="ml-4 font-inter">Daily practice reminders via push or email</li>
-            <li className="ml-4 font-inter">Weekly progress summary</li>
-            <li className="ml-4 font-inter">Track how you feel post‑session</li>
-            <li className="ml-4 font-inter">Beginner posture library</li>
-            <li className="ml-4 font-inter">Access to seasonal “mini‑series”</li>
-          </ul>
-
         </div>
+      </section>
 
-
-        <div className="group relative h-[30rem] w-[32%] rounded-[10px] overflow-hidden
-                shadow-[0_10px_30px_rgba(0,0,0,0.3)]
-                transition-all duration-300
-                flex flex-col items-center justify-center">
-
-          {/* Background image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${bgcard2})` }}
-          />
-
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/40
-                  group-hover:bg-black/70
-                  transition-colors duration-300" />
-
-          {/* Title container */}
-          <div className="relative z-10 flex flex-col items-center w-full">
-            {/* Default label (slides up & fades out) */}
-            <h2 className="font-poppins font-semibold text-[2rem] text-white
-                   transition-transform duration-300
-                   group-hover:-translate-y-[40px] group-hover:opacity-0">
-              Advanced
-            </h2>
-
-            {/* Hover label (slides up into view) */}
-            <h2 className="absolute inset-0 flex items-center justify-center
-                   font-poppins font-semibold text-[2rem] text-white
-                   transition-transform duration-300
-                   group-hover:-translate-y-[10.9rem] group-hover:opacity-100
-                   opacity-0">
-              $13/Month
-            </h2>
-
-            {/* Underline (slides up with default) */}
-            <hr className="w-[10%] border-white mt-2 w-[9%]
-                   transition-transform duration-300
-                   group-hover:-translate-y-[40px] group-hover:opacity-0" />
+      {/* FINAL CTA */}
+      <section className="py-16 md:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-dark bg-surface-2 p-10 text-center">
+            <h3 className="text-3xl font-bold text-slate-100">Ready to begin your practice?</h3>
+            <p className="mt-2 text-subtle">Join Ahara and experience posture-perfect yoga, mindful nutrition, and a caring AI companion.</p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <button onClick={handleLogin} className="inline-flex items-center justify-center rounded-xl bg-brand-gradient px-6 py-3 font-semibold text-slate-900 shadow-brand">Create free account</button>
+              <a href="#features" className="inline-flex items-center justify-center rounded-xl btn-ghost px-6 py-3">Learn more</a>
+            </div>
           </div>
-
-          {/* Hidden list */}
-          <ul className="list-disc absolute inset-0 flex flex-col items-start justify-center
-                 w-full px-8 space-y-2 text-white
-                 opacity-0 pointer-events-none
-                 group-hover:opacity-100 group-hover:pointer-events-auto
-                 transition-opacity duration-500">
-            <li className="ml-4 font-inter">On Demand Yoga & Meditation Tutorials</li>
-            <li className="ml-4 font-inter">Customized Dashboard</li>
-            <li className="ml-4 font-inter">Advanced vision model for real time posture correction.</li>
-            <li className="ml-4 font-inter">Advanced Inteligence for personalised and localized diet charts</li>
-            <li className="ml-4 font-inter">Priority in‑app coach support</li>
-            <li className="ml-4 font-inter">One to one mentoring.</li>
-            <li className="ml-4 font-inter">Personalized intelligence to guide you throughout the journey</li>
-          </ul>
-
         </div>
-
-        <div className="group relative h-[30rem] w-[32%] rounded-[10px] overflow-hidden
-                shadow-[0_10px_30px_rgba(0,0,0,0.3)]
-                transition-all duration-300
-                flex flex-col items-center justify-center">
-
-          {/* Background image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${bgcard3})` }}
-          />
-
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black/40
-                  group-hover:bg-black/70
-                  transition-colors duration-300" />
-
-          {/* Title container */}
-          <div className="relative z-10 flex flex-col items-center w-full">
-            {/* Default label (slides up & fades out) */}
-            <h2 className="font-poppins font-semibold text-[2rem] text-white
-                   transition-transform duration-300
-                   group-hover:-translate-y-[40px] group-hover:opacity-0">
-              The Zen Mode
-            </h2>
-
-            {/* Hover label (slides up into view) */}
-            <h2 className="absolute inset-0 flex items-center justify-center
-                   font-poppins font-semibold text-[2rem] text-white
-                   transition-transform duration-300
-                   group-hover:-translate-y-[12.9rem] group_hover:opacity-100
-                   opacity-0">
-              $20/Month
-            </h2>
-
-            {/* Underline (slides up with default) */}
-            <hr className="w-[10%] border-white mt-2 w-[15%]
-                   transition-transform duration-300
-                   group-hover:-translate-y-[40px] group-hover:opacity-0" />
-          </div>
-
-          {/* Hidden list */}
-          <ul className="list-disc absolute inset-0 flex flex-col items-start justify-center
-                 w-full px-8 space-y-2 text-white
-                 opacity-0 pointer-events-none
-                 group-hover:opacity-100 group-hover:pointer-events-auto
-                 transition-opacity duration-500">
-            <li className="ml-4 font-inter">Monastery‑filmed masterclasses and authentic sessions with temple priests</li>
-            <li className="ml-4 font-inter">Advanced mantra & chakra series for Deep alignment practices</li>
-            <li className="ml-4 font-inter">“Sound of Silence” immersion tracks and Distraction‑blocking binaural audio</li>
-            <li className="ml-4 font-inter">Advanced Inteligence for personalised and localized diet charts</li>
-            <li className="ml-4 font-inter">AI‑paced breath rituals and Dynamic pranayama guided by your stress levels</li>
-            <li className="ml-4 font-inter">Access to more advanced intelligence to guide you on your mindfullness journey</li>
-            <li className="ml-4 font-inter">Books and other reading material</li>
-          </ul>
-
-        </div>
-      </div>
+      </section>
 
       <Footer />
-    </>
-  )
+    </div>
+  );
 }
-
-export default Landing
