@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { SunIcon, MoonIcon } from '@heroicons/react/24/solid';
+// src/layouts/components/Navbar.jsx
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { SunIcon, MoonIcon } from "@heroicons/react/24/solid";
 
 const NAV = [
   { label: "About", href: "#about" },
@@ -13,112 +14,190 @@ const NAV = [
 
 export default function Navbar({ theme, toggleTheme }) {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+  const lastY = useRef(0);
 
-  const handleLogin = () => {
-    navigate('/login');
-  };
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      if (!scrolled && y > 12) setScrolled(true);
+      if (scrolled && y < 6) setScrolled(false);
+      lastY.current = y;
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrolled]);
 
-  const handleSignup = () => {
-    navigate('/signup');
-  };
+  const handleAnchorClick = () => setOpen(false);
+  const Spacer = () => <div className={scrolled ? "h-6 md:h-8" : "h-0"} aria-hidden />;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-dark backdrop-blur bg-surface-2">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <a href="#top" className="flex items-center gap-2">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black">A</span>
-            <span className="font-semibold tracking-wide text-slate-100">Ahara</span>
-          </a>
+    <>
+      <Spacer />
 
-          <nav className="hidden md:flex items-center gap-8">
-            {NAV.map((it) => (
-              <a
-                key={it.label}
-                href={it.href}
-                className="text-slate-300 hover:text-white transition-colors duration-200 relative group"
-              >
-                {it.label}
-                <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-brand-gradient transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
-          </nav>
-
-          <div className="hidden md:flex items-center gap-3">
-            <button
-              onClick={handleLogin}
-              className="px-4 py-2 rounded-xl text-slate-100 border border-dark hover:border-cyan-400/50 transition-colors"
-            >
-              Login
-            </button>
-            <button
-              onClick={handleSignup}
-              className="px-4 py-2 rounded-xl text-slate-100 border border-dark hover:border-cyan-400/50 transition-colors"
-            >
-              Sign up
-            </button>
-            <a
-              href="#pricing"
-              className="px-4 py-2 rounded-xl bg-brand-gradient text-slate-900 font-semibold shadow-brand transition"
-            >
-              Try Zen Mode
-            </a>
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-200 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? <SunIcon className="h-6 w-6" /> : <MoonIcon className="h-6 w-6" />}
-            </button>
-          </div>
-
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-200 hover:bg-white/5"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
+      <header
+        className={
+          scrolled
+            ? "fixed inset-x-0 top-4 z-50 pointer-events-none"
+            : "sticky top-0 z-50 border-b border-dark backdrop-blur bg-surface-2/80"
+        }
+      >
+        <div
+          className={[
+            "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8",
+            "transition-all duration-300 ease-out",
+            scrolled ? "pointer-events-none" : "pointer-events-auto",
+          ].join(" ")}
+        >
+          <div
+            className={[
+              "flex items-center justify-between",
+              scrolled
+                ? "liquid-glass rounded-full border border-white/10 shadow-brand my-0 px-3 md:px-4 py-2 md:py-2.5 pointer-events-auto"
+                : "px-0 py-0",
+            ].join(" ")}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
-              {open ? (
-                <path fillRule="evenodd" d="M6.225 4.811a1 1 0 0 1 1.414 0L12 9.172l4.361-4.36a1 1 0 1 1 1.414 1.414L13.414 10.586l4.36 4.361a1 1 0 1 1-1.414 1.414L12 12l-4.361 4.361a1 1 0 0 1-1.414-1.414l4.36-4.361-4.36-4.36a1 1 0 0 1 0-1.415Z" clipRule="evenodd" />
-              ) : (
-                <path fillRule="evenodd" d="M3.75 5.25a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 6a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 6a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
-              )}
-            </svg>
-          </button>
-        </div>
+            {/* BRAND + Vyas AI logo-chip */}
+            <div className={scrolled ? "flex items-center gap-2 md:gap-3 px-1.5 md:px-2" : "flex items-center gap-2 md:gap-3 py-3 md:py-4"}>
+              <a href="#top" className="flex items-center gap-2">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black">
+                  A
+                </span>
+                <span className="font-semibold tracking-wide text-slate-100">Ahara</span>
+              </a>
 
-        {/* Mobile menu */}
-        {open && (
-          <div className="md:hidden border-t border-dark py-3">
-            <nav className="grid gap-2">
+              {/* Vyas AI logo-chip -> /vland */}
+              <Link
+                to="/vland"
+                className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 hover:bg-white/10 transition"
+                aria-label="Open Vyas AI landing"
+              >
+                {/* tiny gradient “spark” as the Vyas mark */}
+                <span aria-hidden className="h-5 w-5 rounded-md bg-zen-gradient shadow-brand" />
+                <span className="text-sm font-medium">Vyas</span>
+              </Link>
+            </div>
+
+            {/* DESKTOP NAV */}
+            <nav className="hidden md:flex items-center gap-7">
               {NAV.map((it) => (
                 <a
                   key={it.label}
                   href={it.href}
-                  className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5"
-                  onClick={() => setOpen(false)}
+                  onClick={handleAnchorClick}
+                  className="relative group text-slate-300 hover:text-white transition-colors duration-200"
                 >
                   {it.label}
+                  <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-brand-gradient transition-all duration-300 group-hover:w-full" />
                 </a>
               ))}
-              <button onClick={() => { handleLogin(); setOpen(false); }} className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 text-left">
+            </nav>
+
+            {/* DESKTOP ACTIONS */}
+            <div className="hidden md:flex items-center gap-2">
+              <Link
+                to="/login"
+                className={[
+                  "px-4 py-2 rounded-xl text-slate-100 border transition-all duration-200 hover:scale-105",
+                  scrolled ? "border-white/10 hover:border-cyan-400/50" : "border-dark hover:border-cyan-400/50",
+                ].join(" ")}
+              >
                 Login
-              </button>
-              <button onClick={() => { handleSignup(); setOpen(false); }} className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 text-left">
+              </Link>
+              <Link
+                to="/signup"
+                className={[
+                  "px-4 py-2 rounded-xl text-slate-100 border transition-all duration-200 hover:scale-105",
+                  scrolled ? "border-white/10 hover:border-cyan-400/50" : "border-dark hover:border-cyan-400/50",
+                ].join(" ")}
+              >
                 Sign up
-              </button>
+              </Link>
+              <a
+                href="#pricing"
+                className="px-4 py-2 rounded-xl bg-brand-gradient text-slate-900 font-semibold shadow-brand transition-all duration-200 hover:scale-105"
+              >
+                Try Zen Mode
+              </a>
               <button
                 onClick={toggleTheme}
-                className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 text-left"
+                className="ml-1 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-200 transition-colors"
+                aria-label="Toggle theme"
               >
-                {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                {theme === "dark" ? <SunIcon className="h-6 w-6" /> : <MoonIcon className="h-6 w-6" />}
               </button>
-            </nav>
+            </div>
+
+            {/* MOBILE: hamburger */}
+            <button
+              className={[
+                "md:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-200",
+                scrolled ? "hover:bg-white/10" : "hover:bg-white/5",
+              ].join(" ")}
+              onClick={() => setOpen((v) => !v)}
+              aria-label="Toggle menu"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+                {open ? (
+                  <path fillRule="evenodd" d="M6.225 4.811a1 1 0 0 1 1.414 0L12 9.172l4.361-4.36a1 1 0 1 1 1.414 1.414L13.414 10.586l4.36 4.361a1 1 0 1 1-1.414 1.414L12 12l-4.361 4.361a1 1 0 0 1-1.414-1.414l4.36-4.361-4.36-4.36a1 1 0 0 1 0-1.415Z" clipRule="evenodd" />
+                ) : (
+                  <path fillRule="evenodd" d="M3.75 5.25a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 6a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 6a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
+                )}
+              </svg>
+            </button>
           </div>
-        )}
-      </div>
-    </header>
+
+          {/* MOBILE DROPDOWN */}
+          {open && (
+            <div
+              className={[
+                "md:hidden mt-2",
+                scrolled ? "liquid-glass rounded-2xl border border-white/10 p-2 pointer-events-auto" : "border-t border-dark pt-2",
+              ].join(" ")}
+            >
+              <nav className="grid gap-1">
+                {/* Vyas link visible on mobile */}
+                <Link
+                  to="/vland"
+                  onClick={handleAnchorClick}
+                  className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition inline-flex items-center gap-2"
+                >
+                  <span aria-hidden className="h-5 w-5 rounded-md bg-zen-gradient" />
+                  <span>Vyas</span>
+                </Link>
+
+                {NAV.map((it) => (
+                  <a
+                    key={it.label}
+                    href={it.href}
+                    onClick={handleAnchorClick}
+                    className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition"
+                  >
+                    {it.label}
+                  </a>
+                ))}
+
+                <Link to="/login" onClick={handleAnchorClick} className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5">
+                  Login
+                </Link>
+                <Link to="/signup" onClick={handleAnchorClick} className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5">
+                  Sign up
+                </Link>
+                <button
+                  onClick={() => {
+                    toggleTheme();
+                    handleAnchorClick();
+                  }}
+                  className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 text-left"
+                >
+                  {theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                </button>
+              </nav>
+            </div>
+          )}
+        </div>
+      </header>
+    </>
   );
 }
