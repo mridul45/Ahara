@@ -2,11 +2,10 @@
 import React from "react";
 import { useSignupForm } from "../utils/useSignupForm";
 import Authlayout from "../layouts/Authlayout";
+import ErrorDialog from "../components/ErrorDialog"; // Import the ErrorDialog component
 
 function Signup() {
   const {
-    fullName,
-    setFullName,
     email,
     setEmail,
     password,
@@ -21,20 +20,22 @@ function Signup() {
     setAcceptTerms,
     loading,
     errors,
-    strength,
     handleSubmit,
     handleGoogle,
+    errorDialog,
+    closeErrorDialog,
   } = useSignupForm();
 
   return (
     <Authlayout>
+      <ErrorDialog message={errorDialog} onClose={closeErrorDialog} />
       <div className="w-full max-w-md glass border border-dark rounded-2xl p-6 sm:p-8 shadow-brand bg-surface-1 backdrop-blur">
         <header className="mb-6">
           <h2 className="text-2xl font-semibold">Create your account</h2>
           <p className="mt-1 text-sm text-subtle">
             Already have an account?{" "}
             <a
-              href="/login"
+              href="/Ahara/login"
               className="underline decoration-dotted underline-offset-4 hover:text-slate-200"
             >
               Sign in
@@ -64,37 +65,7 @@ function Signup() {
         </div>
 
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
-          {/* Full name */}
-          <div>
-            <label htmlFor="fullName" className="mb-1 block text-sm">
-              Full name
-            </label>
-            <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 opacity-70">
-                <svg viewBox="0 0 24 24" className="h-5 w-5">
-                  <path
-                    fill="currentColor"
-                    d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"
-                  />
-                </svg>
-              </span>
-              <input
-                id="fullName"
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full rounded-xl border border-dark bg-surface-2 px-10 py-3 text-sm placeholder:text-subtle focus:outline-none focus:shadow-brand transition-shadow"
-                placeholder="Your name"
-                aria-invalid={!!errors.fullName}
-                aria-describedby={errors.fullName ? "name-err" : undefined}
-              />
-            </div>
-            {errors.fullName && (
-              <p id="name-err" className="mt-1 text-xs text-red-400">
-                {errors.fullName}
-              </p>
-            )}
-          </div>
+          
 
           {/* Email */}
           <div>
@@ -118,15 +89,10 @@ function Signup() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-xl border border-dark bg-surface-2 px-10 py-3 text-sm placeholder:text-subtle focus:outline-none focus:shadow-brand transition-shadow"
                 placeholder="you@domain.com"
-                aria-invalid={!!errors.email}
-                aria-describedby={errors.email ? "email-err" : undefined}
+                
               />
             </div>
-            {errors.email && (
-              <p id="email-err" className="mt-1 text-xs text-red-400">
-                {errors.email}
-              </p>
-            )}
+            
           </div>
 
           {/* Password */}
@@ -163,14 +129,8 @@ function Signup() {
                 {showPw ? "Hide" : "Show"}
               </button>
             </div>
-            <div className="mt-1 text-xs">
-              <span className={strength.className}>Strength: {strength.label}</span>
-            </div>
-            {errors.password && (
-              <p id="pw-err" className="mt-1 text-xs text-red-400">
-                {errors.password}
-              </p>
-            )}
+            
+            
           </div>
 
           {/* Confirm Password */}
@@ -207,11 +167,7 @@ function Signup() {
                 {showCfm ? "Hide" : "Show"}
               </button>
             </div>
-            {errors.confirm && (
-              <p id="cfm-err" className="mt-1 text-xs text-red-400">
-                {errors.confirm}
-              </p>
-            )}
+            
           </div>
 
           {/* Terms */}
@@ -230,9 +186,7 @@ function Signup() {
                 <a href="/privacy" className="underline underline-offset-4">Privacy Policy</a>.
               </span>
             </label>
-            {errors.terms && (
-              <p className="mt-1 text-xs text-red-400">{errors.terms}</p>
-            )}
+            
           </div>
 
           {/* Submit */}
@@ -244,11 +198,7 @@ function Signup() {
             {loading ? "Creating account…" : "Create account"}
           </button>
 
-          {errors.form && (
-            <p role="alert" className="mt-2 text-center text-sm text-red-400">
-              {errors.form}
-            </p>
-          )}
+          
         </form>
       </div>
     </Authlayout>

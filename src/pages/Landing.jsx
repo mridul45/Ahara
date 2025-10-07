@@ -1,45 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import Tilt3D from "../utils/Tilt3D";
 import DepthParallax from "../utils/DepthParallax";
 import Navbar from "../layouts/components/Navbar";
 import Footer from "../layouts/components/Footer";
 import FeatureCard from "../components/FeatureCard";
+import { useLandingPage } from "../hooks/useLandingPage";
+import { pricingPlans } from "../utils/pricingData";
 
 /* -------------------------------------------
    PAGE
 -------------------------------------------- */
 export default function Landing() {
-  const navigate = useNavigate();
-  const [theme, setTheme] = useState(() => {
-    // Initialize theme from local storage or system preference
-    if (typeof window !== 'undefined') {
-      const storedTheme = localStorage.getItem('theme');
-      if (storedTheme) {
-        return storedTheme;
-      }
-      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    }
-    return 'dark'; // Default to dark if not in browser environment
-  });
-
-  useEffect(() => {
-    if (theme === 'light') {
-      document.documentElement.classList.add('light');
-      localStorage.setItem('theme', 'light');
-    } else {
-      document.documentElement.classList.remove('light');
-      localStorage.setItem('theme', 'dark');
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
-
-  const handleLogin = () => {
-    navigate('/login');
-  };
+  const {
+    theme,
+    toggleTheme,
+    selectedPlan,
+    handlePlanSelect,
+    handleLogin,
+  } = useLandingPage();
 
   return (
     <div id="top" className="min-h-screen scroll-smooth bg-[var(--color-bg-dark)] text-slate-200 selection:bg-cyan-500/30">
@@ -62,11 +40,11 @@ export default function Landing() {
                 Ahara unifies yoga & meditation tutorials, <span className="text-slate-200">real-time posture correction</span>, a <span className="text-slate-200">hyper-personalized diet planner</span> using local ingredients, and an engaging AI companion with memory.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <button onClick={handleLogin} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">
+                <button onClick={handleLogin} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand transition-transform duration-200 hover:scale-105">
                   Get Started
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M13.5 4.5a1 1 0 0 1 1.707-.707l5 5a1 1 0 0 1 0 1.414l-5 5A1 1 0 0 1 13.5 14.5V13h-6a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h6V5.207Z"/></svg>
                 </button>
-                <a href="#features" className="inline-flex items-center justify-center gap-2 rounded-xl btn-ghost px-5 py-3 font-medium">
+                <a href="#features" className="inline-flex items-center justify-center gap-2 rounded-xl btn-ghost px-5 py-3 font-medium transition-transform duration-200 hover:scale-105">
                   Explore Features
                 </a>
               </div>
@@ -223,7 +201,7 @@ export default function Landing() {
                   <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-teal-400"/> Distraction-free mode</li>
                 </ul>
                 <div className="mt-6 flex gap-3">
-                  <a href="#pricing" className="inline-flex items-center justify-center rounded-xl bg-zen-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">Get Zen Mode</a>
+                  <a href="#pricing" className="inline-flex items-center justify-center rounded-xl bg-zen-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand transition-transform duration-200 hover:scale-105">Get Zen Mode</a>
                   <a href="#features" className="inline-flex items-center justify-center rounded-xl btn-ghost px-5 py-3">See features</a>
                 </div>
               </div>
@@ -246,49 +224,52 @@ export default function Landing() {
           <p className="mt-3 text-center text-subtle">Start free. Upgrade when you want the full experience.</p>
 
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {/* Free */}
-            <div className="relative rounded-3xl border border-dark bg-surface-2 p-8">
-              <h3 className="text-xl font-semibold text-slate-100">Basic</h3>
-              <p className="mt-1 text-subtle">Core tutorials, meal planner, and chat companion.</p>
-              <div className="mt-6 text-4xl font-black">₹0<span className="text-base font-medium text-subtle"> / forever</span></div>
-              <ul className="mt-6 grid gap-2 text-sm text-slate-300">
-                <li>• Yoga & meditation library (starter)</li>
-                <li>• AI posture tips (lite)</li>
-                <li>• Personalized diet plan (basic)</li>
-                <li>• Meal tracker</li>
-              </ul>
-              <button onClick={handleLogin} className="mt-8 inline-flex w-full items-center justify-center rounded-xl btn-ghost px-5 py-3">Get started</button>
-            </div>
+            {pricingPlans.map((plan) => (
+              <div
+                key={plan.name}
+                onClick={() => handlePlanSelect(plan.name)}
+                className={`relative cursor-pointer rounded-3xl border bg-surface-2 p-8 transition-all
+                  ${selectedPlan === plan.name
+                    ? 'card-3d-glow shadow-3d-selected border-cyan-400/30 ring-1 ring-inset ring-cyan-400/15'
+                    : 'border-dark'
+                  }`}
+              >
+                {/* soft internal glow when selected */}
+                {selectedPlan === plan.name && (
+                  <>
+                    <div className="absolute -inset-2 -z-10 rounded-3xl bg-[var(--gradient-surface-glow)] blur-xl" />
+                    <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-40 [mask-image:radial-gradient(70%_70%_at_50%_0%,black,transparent)] bg-[conic-gradient(from_180deg_at_50%_0%,rgba(34,211,238,.12),rgba(167,139,250,.10),rgba(45,212,191,.12),rgba(34,211,238,.12))]" />
+                  </>
+                )}
 
-            {/* Pro */}
-            <div className="relative rounded-3xl border border-purple-400/20 bg-surface-2 p-8 ring-1 ring-inset ring-purple-400/10">
-              <div className="absolute right-6 top-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 px-3 py-1 text-xs font-semibold text-slate-900">Most Popular</div>
-              <h3 className="text-xl font-semibold text-slate-100">Pro</h3>
-              <p className="mt-1 text-subtle">Everything in Basic, plus advanced features.</p>
-              <div className="mt-6 text-4xl font-black">₹199<span className="text-base font-medium text-subtle"> / month</span></div>
-              <ul className="mt-6 grid gap-2 text-sm text-slate-300">
-                <li>• Everything in Basic</li>
-                <li>• Real-time voice corrections</li>
-                <li>• Local ingredient optimizer</li>
-                <li>• Practice analytics & streaks</li>
-              </ul>
-              <button onClick={handleLogin} className="mt-8 inline-flex w-full items-center justify-center rounded-xl bg-brand-gradient px-5 py-3 font-semibold text-slate-900 shadow-brand">Get Pro</button>
-            </div>
-
-            {/* Zen Mode */}
-            <div className="relative rounded-3xl border border-dark bg-surface-2 p-8">
-              <h3 className="text-xl font-semibold text-slate-100">Zen Mode</h3>
-              <p className="mt-1 text-subtle">Advanced content, voice coaching, and deeper analytics.</p>
-              <div className="mt-6 text-4xl font-black">₹299<span className="text-base font-medium text-subtle"> / month</span></div>
-              <ul className="mt-6 grid gap-2 text-sm text-slate-300">
-                <li>• Advanced monk-led meditations</li>
-                <li>• Real-time voice corrections</li>
-                <li>• Local ingredient optimizer</li>
-                <li>• Practice analytics & streaks</li>
-                <li>• Offline mode</li>
-              </ul>
-              <button onClick={handleLogin} className="mt-8 inline-flex w-full items-center justify-center rounded-xl btn-ghost px-5 py-3">Start Zen</button>
-            </div>
+                {plan.popular && (
+                  <div className="absolute right-6 top-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 px-3 py-1 text-xs font-semibold text-slate-900">
+                    Most Popular
+                  </div>
+                )}
+                <h3 className="text-xl font-semibold text-slate-100">{plan.name}</h3>
+                <p className="mt-1 text-subtle">{plan.description}</p>
+                <div className="mt-6 text-4xl font-black">
+                  {plan.price}
+                  <span className="text-base font-medium text-subtle">{plan.priceSuffix}</span>
+                </div>
+                <ul className="mt-6 grid gap-2 text-sm text-slate-300">
+                  {plan.features.map((feature, i) => (
+                    <li key={i}>• {feature}</li>
+                  ))}
+                </ul>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleLogin(); }}
+                  className={`mt-8 inline-flex w-full items-center justify-center rounded-xl px-5 py-3 font-semibold ${
+                    selectedPlan === plan.name
+                      ? 'bg-brand-gradient text-slate-900 shadow-brand'
+                      : 'btn-ghost'
+                  }`}
+                >
+                  {plan.buttonText}
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -300,8 +281,8 @@ export default function Landing() {
             <h3 className="text-3xl font-bold text-slate-100">Ready to begin your practice?</h3>
             <p className="mt-2 text-subtle">Join Ahara and experience posture-perfect yoga, mindful nutrition, and a caring AI companion.</p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <button onClick={handleLogin} className="inline-flex items-center justify-center rounded-xl bg-brand-gradient px-6 py-3 font-semibold text-slate-900 shadow-brand">Create free account</button>
-              <a href="#features" className="inline-flex items-center justify-center rounded-xl btn-ghost px-6 py-3">Learn more</a>
+              <button onClick={handleLogin} className="inline-flex items-center justify-center rounded-xl bg-brand-gradient px-6 py-3 font-semibold text-slate-900 shadow-brand transition-transform duration-200 hover:scale-105">Create free account</button>
+              <a href="#features" className="inline-flex items-center justify-center rounded-xl btn-ghost px-6 py-3 transition-transform duration-200 hover:scale-105">Learn more</a>
             </div>
           </div>
         </div>
