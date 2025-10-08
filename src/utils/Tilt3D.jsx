@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export default function Tilt3D({ children, className = "", max = 12, glare = true, shine = true }) {
   const ref = useRef(null);

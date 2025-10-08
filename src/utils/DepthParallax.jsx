@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function DepthParallax() {
   const [pos, setPos] = useState({ x: 0.5, y: 0.4 });

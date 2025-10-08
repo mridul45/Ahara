@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 export const GENDER_OPTIONS = [
   { value: "male", label: "Male" },

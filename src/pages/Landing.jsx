@@ -1,9 +1,3 @@
-import React from "react";
-import Tilt3D from "../utils/Tilt3D";
-import DepthParallax from "../utils/DepthParallax";
-import Navbar from "../layouts/components/Navbar";
-import Footer from "../layouts/components/Footer";
-import FeatureCard from "../components/FeatureCard";
 import { useLandingPage } from "../hooks/useLandingPage";
 import { pricingPlans } from "../utils/pricingData";
 

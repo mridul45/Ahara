@@ -1,16 +1,3 @@
-import { Routes, Route, Link } from 'react-router-dom'
-import Login from './pages/Login'
-import Signup from './pages/Signup'
-import Landing from './pages/Landing'
-import Dashboard from './pages/Dashboard'
-import BusinessPage from './pages/BusinessPage'
-import DetailsPage from './pages/DetailsPage'
-import TutorialPlayerPage from './pages/TutorialPlayerPage'
-import ProfileCompletion from './pages/ProfileCompletion'
-import OtpVerify from './pages/OTPVerification'
-import Profile from './pages/Profile'
-import Chat from './pages/Chat'
-import VyasLanding from './pages/VyasLanding'
 
 
 function App() {

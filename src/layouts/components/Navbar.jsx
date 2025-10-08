@@ -1,7 +1,5 @@
 // src/layouts/components/Navbar.jsx
-import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { SunIcon, MoonIcon } from "@heroicons/react/24/solid";
+import { useEffect, useRef, useState } from "react";
 
 const NAV = [
   { label: "About", href: "#about" },

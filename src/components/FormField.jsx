@@ -1,4 +1,3 @@
-import React from 'react';
 
 const FormField = ({ id, label, type = 'text', value, onChange, placeholder, children, rows }) => {
   const isFilled = value && value.length > 0;

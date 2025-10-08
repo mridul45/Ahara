@@ -1,20 +1,6 @@
 // src/pages/VyasLanding.jsx
-import React from "react";
-import {
-  Sparkles,
-  Brain,
-  Bot,
-  AudioLines,
-  Move3D,
-  Mic,
-  MapPin,
-  Leaf,
-  ChevronRight,
-  ShieldCheck,
-  Stars,
-  PlayCircle,
-} from "lucide-react";
-import { Link } from "react-router-dom";
+
+
 
 /**
  * Vyas — AI Wellness Companion (Landing)

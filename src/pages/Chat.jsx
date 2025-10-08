@@ -1,28 +1,7 @@
 // src/pages/Chat.jsx
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  MessageSquare,
-  Plus,
-  Send,
-  StopCircle,
-  RotateCcw,
-  Trash2,
-  Paperclip,
-  Loader2,
-  Settings,
-  Download,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Sparkles,
-  Clock,
-  Search,
-  MoreVertical,
-  Copy,
-  Edit3,
-  Check,
-  X,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+
 
 const spring = { type: "spring", stiffness: 260, damping: 26, mass: 0.8 };
 

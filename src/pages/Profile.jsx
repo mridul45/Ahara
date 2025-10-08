@@ -1,22 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
-  User,
   Edit3,
   MapPin,
   Sparkles,
   Flame,
   Apple,
-  Trophy,
-  Settings,
-  ChevronRight,
   CheckCircle2,
   Clock3,
   Dumbbell,
   BookOpenText,
   ShieldCheck,
-  Calendar,
-  Camera,
 } from "lucide-react";
 
 /**

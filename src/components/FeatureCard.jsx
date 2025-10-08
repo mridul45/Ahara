@@ -1,5 +1,3 @@
-import React from 'react';
-import Tilt3D from "../utils/Tilt3D";
 
 export default function FeatureCard({ title, desc, iconPath }) {
   return (
