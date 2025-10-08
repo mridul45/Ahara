@@ -406,3 +406,16 @@ html.light .liquid-glass::after { opacity: .22; filter: blur(10px); }
     opacity .25s ease;
   will-change: top, transform, border-radius, box-shadow, backdrop-filter;
 }
+
+
+.bg-surface-2-80 {
+  /* sRGB mix keeps color consistent across builds */
+  background: color-mix(in sRGB, var(--color-surface-2) 80%, transparent);
+}
+
+/* Make glass even more reliable across browsers */
+.liquid-glass {
+  isolation: isolate;                  /* keeps backdrop sampling stable */
+  -webkit-backdrop-filter: blur(18px) saturate(140%) contrast(105%);
+  backdrop-filter: blur(18px) saturate(140%) contrast(105%);
+}

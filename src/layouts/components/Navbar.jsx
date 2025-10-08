@@ -12,27 +12,6 @@ const NAV = [
   { label: "Contact", href: "#contact" },
 ];
 
-/**
- * ClassKeeper:
- * Ensures Tailwind keeps the blur/opacity utilities we toggle.
- * This avoids production differences when classes are conditionally applied.
- * (Hidden, zero footprint.)
- */
-function ClassKeeper() {
-  return (
-    <div className="hidden">
-      {/* blur variants we might toggle */}
-      <div className="backdrop-blur backdrop-blur-sm backdrop-blur-md backdrop-blur-lg backdrop-blur-xl" />
-      {/* glass tints we might toggle */}
-      <div className="bg-white/5 bg-white/10 bg-white/15 bg-white/20 bg-slate-900/10 bg-slate-900/20 bg-slate-900/30" />
-      {/* borders we might toggle */}
-      <div className="border-white/10 border-white/20 border-dark" />
-      {/* generic tokens used in combinations */}
-      <div className="liquid-glass shadow-brand bg-brand-gradient bg-zen-gradient" />
-    </div>
-  );
-}
-
 export default function Navbar({ theme, toggleTheme }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -51,22 +30,22 @@ export default function Navbar({ theme, toggleTheme }) {
   }, [scrolled]);
 
   const handleAnchorClick = () => setOpen(false);
-  const Spacer = () => (
-    <div className={scrolled ? "h-6 md:h-8" : "h-0"} aria-hidden />
-  );
+  const Spacer = () => <div className={scrolled ? "h-6 md:h-8" : "h-0"} aria-hidden />;
 
   return (
     <>
-      <ClassKeeper />
+      {/* Tailwind purge keeper (hidden, zero footprint). 
+         Ensures these utilities always exist in production: */}
+      <span className="hidden backdrop-blur backdrop-blur-md bg-white/5 hover:bg-white/10 border-white/10" />
+
       <Spacer />
 
       <header
-        role="banner"
         className={
           scrolled
             ? "fixed inset-x-0 top-4 z-50 pointer-events-none"
-            : // sticky state uses backdrop + surface tint (literal classes)
-              "sticky top-0 z-50 border-b border-dark backdrop-blur bg-surface-2/80"
+            : // use our own token instead of `bg-surface-2/80`
+              "sticky top-0 z-50 border-b border-dark backdrop-blur bg-surface-2-80"
         }
       >
         <div
@@ -80,12 +59,11 @@ export default function Navbar({ theme, toggleTheme }) {
             className={[
               "flex items-center justify-between",
               scrolled
-                ? // glass capsule (no dynamic class fragments)
-                  "liquid-glass rounded-full border border-white/10 shadow-brand my-0 px-3 md:px-4 py-2 md:py-2.5 pointer-events-auto"
+                ? "liquid-glass rounded-full border border-white/10 shadow-brand my-0 px-3 md:px-4 py-2 md:py-2.5 pointer-events-auto"
                 : "px-0 py-0",
             ].join(" ")}
           >
-            {/* BRAND + Vyas AI chip */}
+            {/* BRAND + Vyas AI logo-chip */}
             <div
               className={
                 scrolled
@@ -97,9 +75,7 @@ export default function Navbar({ theme, toggleTheme }) {
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-gradient text-slate-900 font-black">
                   A
                 </span>
-                <span className="font-semibold tracking-wide text-slate-100">
-                  Ahara
-                </span>
+                <span className="font-semibold tracking-wide text-slate-100">Ahara</span>
               </a>
 
               {/* Vyas AI logo-chip -> /vland */}
@@ -132,13 +108,19 @@ export default function Navbar({ theme, toggleTheme }) {
             <div className="hidden md:flex items-center gap-2">
               <Link
                 to="/login"
-                className="px-4 py-2 rounded-xl text-slate-100 border border-white/10 transition-all duration-200 hover:scale-105 hover:border-cyan-400/50"
+                className={[
+                  "px-4 py-2 rounded-xl text-slate-100 border transition-all duration-200 hover:scale-105",
+                  "border-white/10 hover:border-cyan-400/50",
+                ].join(" ")}
               >
                 Login
               </Link>
               <Link
                 to="/signup"
-                className="px-4 py-2 rounded-xl text-slate-100 border border-white/10 transition-all duration-200 hover:scale-105 hover:border-cyan-400/50"
+                className={[
+                  "px-4 py-2 rounded-xl text-slate-100 border transition-all duration-200 hover:scale-105",
+                  "border-white/10 hover:border-cyan-400/50",
+                ].join(" ")}
               >
                 Sign up
               </Link>
@@ -153,28 +135,21 @@ export default function Navbar({ theme, toggleTheme }) {
                 className="ml-1 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-200 transition-colors"
                 aria-label="Toggle theme"
               >
-                {theme === "dark" ? (
-                  <SunIcon className="h-6 w-6" />
-                ) : (
-                  <MoonIcon className="h-6 w-6" />
-                )}
+                {theme === "dark" ? <SunIcon className="h-6 w-6" /> : <MoonIcon className="h-6 w-6" />}
               </button>
             </div>
 
             {/* MOBILE: hamburger */}
             <button
-              className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-200 hover:bg-white/10"
+              className={[
+                "md:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-200",
+                scrolled ? "hover:bg-white/10" : "hover:bg-white/5",
+              ].join(" ")}
               onClick={() => setOpen((v) => !v)}
               aria-label="Toggle menu"
               aria-expanded={open}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="h-6 w-6"
-                aria-hidden="true"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
                 {open ? (
                   <path
                     fillRule="evenodd"
@@ -197,8 +172,7 @@ export default function Navbar({ theme, toggleTheme }) {
             <div
               className={[
                 "md:hidden mt-2",
-                // same glass as desktop to avoid visual diff
-                "liquid-glass rounded-2xl border border-white/10 p-2 pointer-events-auto",
+                scrolled ? "liquid-glass rounded-2xl border border-white/10 p-2 pointer-events-auto" : "border-t border-dark pt-2",
               ].join(" ")}
             >
               <nav className="grid gap-1" aria-label="Mobile">
@@ -222,18 +196,10 @@ export default function Navbar({ theme, toggleTheme }) {
                   </a>
                 ))}
 
-                <Link
-                  to="/login"
-                  onClick={handleAnchorClick}
-                  className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5"
-                >
+                <Link to="/login" onClick={handleAnchorClick} className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5">
                   Login
                 </Link>
-                <Link
-                  to="/signup"
-                  onClick={handleAnchorClick}
-                  className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5"
-                >
+                <Link to="/signup" onClick={handleAnchorClick} className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5">
                   Sign up
                 </Link>
                 <button
