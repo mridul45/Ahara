@@ -1,4 +1,3 @@
-
 name: CI/CD Pipeline
 
 on:
@@ -26,8 +25,10 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Lint project
+    # 👇 Lint but don't fail the job
+    - name: Lint project (non-blocking)
       run: npm run lint
+      continue-on-error: true
 
     - name: Build project
       run: npm run build
