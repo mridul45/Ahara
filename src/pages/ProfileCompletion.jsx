@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
+import FormField from "../components/FormField";
 import {
   MAX_BIO,
   MAX_AVATAR_MB,
@@ -9,6 +10,8 @@ import {
   classNames,
   bytesToMB,
   helper,
+  GenderChips,
+  AvatarUploader,
 } from "../utils/profileFormUtils";
 
 /**

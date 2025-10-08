@@ -1,9 +1,11 @@
 // src/pages/DetailPage.jsx
-import { useEffect, useMemo, useRef, useState, memo } from 'react';
-import { useParams } from 'react-router-dom';
-import { Clock, Languages, Layers, PlayCircle, Star, Globe2
+import React, { useEffect, useMemo, useRef, useState, memo } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import {
+  ArrowLeft, Clock, Languages, Layers, PlayCircle, Star, Sun, Moon, Globe2
 } from 'lucide-react';
 
+import Footer from '../layouts/components/Footer';
 import { useTheme } from '../hooks/useTheme';
 
 // ============================

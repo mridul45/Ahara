@@ -1,13 +1,19 @@
 // src/pages/BusinessPage.jsx
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Search, Video, Users, Sun, Moon, History, CalendarPlus, Zap, Clock3, Clock, Star, Check
+} from 'lucide-react';
 
-
+import Footer from '../layouts/components/Footer';
 import { useTheme } from '../hooks/useTheme';
 import { tutorials, instructors } from '../utils/appData';
+import { TutorialCard, ContinueWatchingCard } from '../components/TutorialsAndClasses';
 import { continueWatching, liveClasses } from '../utils/classData';
 
 import {
   QueryClient,
+  QueryClientProvider,
   useQuery,
 } from '@tanstack/react-query';
 import { persistQueryClient } from '@tanstack/react-query-persist-client';

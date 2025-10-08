@@ -1,6 +1,8 @@
 // src/pages/Signup.jsx
+import React from "react";
 import { useSignupForm } from "../utils/useSignupForm";
-// Import the ErrorDialog component
+import Authlayout from "../layouts/Authlayout";
+import ErrorDialog from "../components/ErrorDialog"; // Import the ErrorDialog component
 
 function Signup() {
   const {

@@ -1,4 +1,6 @@
+import React from "react";
 import { useTheme } from "../hooks/useTheme";
+import { SunIcon, MoonIcon } from '@heroicons/react/24/solid';
 
 function Authlayout({ children }) {
   const { theme, toggleTheme } = useTheme();

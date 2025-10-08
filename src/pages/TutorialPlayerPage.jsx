@@ -1,5 +1,7 @@
-import { useParams } from 'react-router-dom';
+import React from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { tutorials } from '../utils/appData';
+import { Clock, PlayCircle, ChevronLeft } from 'lucide-react';
 
 const TutorialPlayerPage = () => {
     const { id } = useParams();

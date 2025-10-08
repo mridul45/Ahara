@@ -1,15 +1,22 @@
-import { useEffect, useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
+import {
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie
+} from 'recharts';
 import {
   BoltIcon,
   FireIcon,
   UserGroupIcon,
+  PlusIcon,
+  BellIcon,
+  UserCircleIcon,
   SunIcon,
   MoonIcon,
   BookOpenIcon,
   CheckCircleIcon,
   TrophyIcon,
   SparklesIcon,
+  PlayIcon,
 } from '@heroicons/react/24/solid';
 import { useTheme } from '../hooks/useTheme';
 import { useNavigate } from 'react-router-dom';
