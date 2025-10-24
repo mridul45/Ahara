@@ -1,148 +1,178 @@
-# Ahara - Wellness & Mindfulness Platform
+# Ahara — AI Wellness Companion
 
-A modern wellness platform built with Vite, React, and Tailwind CSS that combines AI-powered yoga assistance, meditation guidance, and personalized meal planning.
+Ahara is a modern wellness platform that blends AI-guided yoga and meditation, a contextual nutrition planner, and an on-demand conversational coach named **Vyas**. The project is built with React 19, Vite 7, Tailwind CSS 4, and a modular architecture focused on feature isolation and reusability.
 
-## Features
+---
 
-- **Yoga and Meditation Tutorials**: Expert-led sessions with real-time posture correction
-- **AI-Powered Meal Planning**: Personalized diet charts with local ingredient sourcing
-- **PosturePerfect™**: Real-time AI-driven posture correction
-- **The Zen Mode**: Exclusive monastery-led meditation sessions and spiritual content
+## Key Product Highlights
 
-## Tech Stack
+- **Immersive Landing Experience** – Depth-parallax hero, interactive cards, and multi-plan pricing with theme toggle.
+- **Auth Suite** – Modern login, signup, OTP verification, and profile completion flows that plug into the shared API client.
+- **Vyas Chat** – Streaming assistant UI with conversation management, model selection, and settings drawer.
+- **Dashboard & Business Hub** – Rich analytics, curated tutorials, and playlist integrations powered by TanStack Query.
+- **Profile Center** – Gamified overview, achievements, and editable profile with accessible form controls.
 
-- **Frontend**: React 19 with Vite
-- **Styling**: Tailwind CSS v4
-- **State Management**: Redux Toolkit
-- **Routing**: React Router v7
-- **3D Visualization**: Three.js
-- **Icons**: React Icons
+---
+
+## Tech Stack & Tooling
+
+- **Core**: React 19, Vite 7, ES modules
+- **Styling**: Tailwind CSS 4, custom tokens in `src/app/styles/global.css`
+- **State**: Redux Toolkit (`@app/store`), TanStack Query (shared query client with persistence)
+- **Routing**: React Router v7 with lazy-loaded feature pages
+- **3D & Motion**: `@react-three/fiber`, `@react-three/drei`, Framer Motion
+- **Icons**: Lucide, Heroicons, React Icons
+- **Utility**: ESLint 9, Tailwind/Vite plugins, npm scripts
+
+---
 
 ## Project Structure
 
 ```
 src/
-├── assets/          # Static assets (images, logos)
-├── components/      # Reusable UI components
-├── hooks/          # Custom React hooks
-├── layouts/        # Layout components (Auth, Dashboard)
-├── pages/          # Page components
-├── routes/         # Route configurations
-├── services/       # API and external services
-├── store/          # Redux store and slices
-└── utils/          # Utility functions
+├── app/
+│   ├── App.jsx                 # Root component delegating to route definitions
+│   ├── providers/              # Global providers (Redux, Router, Query)
+│   ├── routes/                 # Lazy route configuration
+│   ├── store/                  # Redux store + slices
+│   └── styles/                 # Global Tailwind theme and tokens
+├── assets/                     # Static assets (backgrounds, media, icons)
+├── features/                   # Feature-first modules (landing, auth, chat, etc.)
+│   ├── auth/                   # Authentication flows (pages, hooks, components)
+│   ├── chat/                   # Vyas chat experience
+│   ├── dashboard/              # Dashboard + business analytics interfaces
+│   ├── landing/                # Marketing site components, hooks, data
+│   └── profile/                # Profile overview and completion flows
+├── shared/                     # Cross-cutting concerns
+│   ├── api/                    # API client + React Query utilities
+│   ├── components/             # Global UI primitives (Navbar, Footer, ErrorDialog, etc.)
+│   └── hooks/                  # Shared hooks (theme controller, etc.)
+└── main.jsx                    # App bootstrap (CSS import, provider mounting)
 ```
 
-## Getting Started
+> Path aliases are configured in `vite.config.js` and `jsconfig.json`:
+> - `@app/*` → `src/app/*`
+> - `@features/*` → `src/features/*`
+> - `@shared/*` → `src/shared/*`
+> - `@assets/*` → `src/assets/*`
 
-1. **Clone the repository**
+---
+
+## Architectural Overview
+
+- **Entry Point** – `src/main.jsx` loads global styles, mounts `<AppProviders>` (Redux + Router + React Query), and renders `<App />`.
+- **Routing** – `src/app/routes/AppRoutes.jsx` defines all routes via `React.lazy` to enable code-splitting by feature.
+- **State Management** – Central Redux store lives in `src/app/store/index.js` with slices under `store/slices`. React Query lives in `src/shared/api/reactQueryClient.js` and is initialised once in the provider layer with optional localStorage persistence.
+- **API Access** – `src/shared/api/client.js` encapsulates auth headers, CSRF bootstrap, token refresh, and exposes helpers such as `login`, `signup`, and `verifyOtp`.
+- **Styling System** – Tailwind tokens and bespoke CSS helpers are defined in `src/app/styles/global.css`. Components stay utility-first with minimal custom CSS.
+- **Feature Isolation** – Each feature includes its own `pages`, `components`, `data`, and `hooks` where relevant, keeping dependencies local and predictable.
+- **Shared Primitives** – Components used across features (Navbar, Footer, form fields, dialogs) and hooks (theme toggler) reside under `src/shared`.
+
+---
+
+## Available Scripts
 
 ```bash
-git clone [repository-url]
-cd ahara
-```
-
-2. **Install dependencies**
-
-```bash
+# Install dependencies
 npm install
-```
 
-3. **Start development server**
-
-```bash
+# Start development server (http://localhost:5173 by default)
 npm run dev
-```
 
-4. **Build for production**
-
-```bash
+# Type-aware production build
 npm run build
+
+# Preview production build locally
+npm run preview
+
+# Lint JavaScript/JSX sources
+npm run lint
+
+# Deploy to GitHub Pages (requires remote setup)
+npm run deploy
 ```
 
-## Docker Support
+---
 
-The project includes Docker configuration for containerized deployment:
+## Environment Configuration
 
-```bash
-# Build Docker image
-./scripts/build.sh
+- API base URL defaults to `https://ahara-be.onrender.com`. Override with `VITE_API_BASE` in an `.env` file.
+- React Query persistence is browser-aware and will no-op during SSR/pre-render contexts.
 
-# Start containers
-./scripts/start.sh
+Optional `.env.local` example:
+
+```
+VITE_API_BASE=https://your-api.com
 ```
 
-## Color Theme
+---
 
-The project uses a custom color palette defined in `tailwind.config.js`:
+## Feature Breakdown
 
-- Primary Background: #F9FAFB
-- Shiva Blue: #2E4A78
-- Secondary White: #FFFFFF
-- Shiva Black: #1C2B39
+- **Landing (`@features/landing`)**
+  - Components: `Tilt3D`, `DepthParallax`, `FeatureCard`
+  - Page modules: `LandingPage`, `VyasLandingPage`
+  - Data: `pricingPlans.js`
+  - Hook: `useLandingPage` (leverages shared `useTheme`)
+- **Auth (`@features/auth`)**
+  - Pages: `LoginPage`, `SignupPage`, `OtpVerificationPage`, `ProfileCompletionPage`
+  - Components: `AuthLayout`
+  - Hooks: `useLoginForm`, `useSignupForm`, `useOtp`
+  - Utils: `otp.js`
+- **Dashboard (`@features/dashboard`)**
+  - Pages: `DashboardPage`, `BusinessPage`, `DetailsPage`, `TutorialPlayerPage`
+  - Components: `TutorialsAndClasses`
+  - Data: `appData.js`, `cardData.js`, `classData.js`
+- **Chat (`@features/chat`)**
+  - Page: `ChatPage` with streaming UI, sidebar management, theme persistence
+- **Profile (`@features/profile`)**
+  - Pages: `ProfilePage`, `ProfileCompletionPage`
+  - Components: `ProfileHelpers.jsx`, `ProfileFormControls.jsx`
 
-## Project Pages
+---
 
-- **Landing**: Homepage with feature showcase
-- **Login/Signup**: Authentication pages
-- **Dashboard**: User dashboard with progress tracking
-- **Features**: Detailed feature demonstrations
+## Styling & Theming
 
-## 3D Wireframes
+- Dark-first palette with light-mode overrides controlled via `useTheme`.
+- Tailwind 4 `@theme` tokens define typography, colours, gradients, and custom utilities.
+- Utility helpers (e.g., `.glass`, `.btn-brand`, `.btn-ghost`) live alongside Tailwind imports in `global.css`.
 
-The project includes several 3D wireframe models:
-- Meditating Person
-- Human Brain
-- Helper Bot
-- Shiva Model
+---
 
-## Routing and Navigation
+## Data & API Notes
 
-The application uses React Router v7 for client-side routing. The routing configuration is set up in `src/App.jsx` and includes the following routes:
+- API client handles:
+  - CSRF initialisation (`ensureCsrf`)
+  - Access token refresh (`tryRefreshAccess`)
+  - JSON parsing and standard payload unwrapping
+- React Query `fetchFeaturedPlaylists` caches ETag responses and gracefully handles offline/304/404 scenarios.
 
-- `/` - Landing page with feature showcase and pricing
-- `/login` - User authentication page
-- `/signup` - New user registration
-- `/dashboard` - User dashboard with progress tracking
+---
 
-### Navigation Implementation
+## Deployment & Docker
 
-- The app wraps the root component with `BrowserRouter` in `src/main.jsx`
-- Navigation is handled using the `useNavigate` hook from `react-router-dom`
-- The Navbar component in `layouts/components/Navbar.jsx` handles primary navigation
-- Example of programmatic navigation:
-  ```jsx
-  const navigate = useNavigate();
-  navigate('/login'); // Navigate to login page
-  ```
+- Production build emits static assets in `dist/`.
+- Docker scripts live under `scripts/` (`build.sh`, `start.sh`) for container-based workflows.
+- GitHub Pages workflow uses `npm run deploy` (build + `gh-pages` publish with base path `/Ahara/`).
 
-### Protected Routes
-Currently, all routes are public. If you need to add authentication:
-
-1. Create a `PrivateRoute` component
-2. Wrap protected routes with authentication checks
-3. Redirect unauthenticated users to the login page
-
-### Route Structure
-```
-/
-├── /login
-├── /signup
-└── /dashboard
-```
+---
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+2. Create a feature branch (`git checkout -b feature/my-update`)
+3. Commit with clear messages (`git commit -m "feat: add xyz"`)
+4. Push and open a Pull Request
 
-## License
+Lint (`npm run lint`) and build (`npm run build`) before submitting changes.
 
-[Your License]
+---
 
-## Contact
+## License & Contact
 
-[Your Contact Information]
+- **License**: Add your preferred license text/link here.
+- **Contact**: Replace with your preferred contact information (email, website, etc.).
+
+---
+
+Made with care to help people nurture mind, body, and nutrition through intelligent guidance. Namaste. 🙏
