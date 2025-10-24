@@ -152,7 +152,15 @@ VITE_API_BASE=https://your-api.com
 ## Deployment & Docker
 
 - Production build emits static assets in `dist/`.
-- Docker scripts live under `scripts/` (`build.sh`, `start.sh`) for container-based workflows.
+- Container image built via multi-stage `Dockerfile` (Node 20 + static asset server).
+- Run locally with Docker Compose:
+
+  ```bash
+  docker compose up --build
+  ```
+
+  App is served on http://localhost:4173.
+
 - GitHub Pages workflow uses `npm run deploy` (build + `gh-pages` publish with base path `/Ahara/`).
 
 ---

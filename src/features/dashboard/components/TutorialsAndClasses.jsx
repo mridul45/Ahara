@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Clock, PlayCircle } from 'lucide-react';
 
 export const TutorialCard = ({ tutorial }) => (
-    <Link to={`/details/${tutorial.id}`} className="group block glass rounded-xl overflow-hidden transition-all duration-300 hover:border-cyan-400/50 hover:-translate-y-1 u-will-change-transform u-preserve-3d animate-levitate-slow depth-z-10">
+    <Link to={`/details/${tutorial.id}`} className="group block glass rounded-xl overflow-hidden transition-transform duration-300 hover:border-cyan-400/50 hover:-translate-y-1">
         <div className="relative">
             <img src={tutorial.image} alt={tutorial.title} className="w-full h-40 object-cover" />
             <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -19,7 +19,7 @@ export const TutorialCard = ({ tutorial }) => (
 );
 
 export const ContinueWatchingCard = ({ tutorial }) => (
-    <Link to={`/details/${tutorial.id}`} className="group block glass rounded-xl overflow-hidden transition-all duration-300 hover:border-cyan-400/50 hover:-translate-y-1 u-will-change-transform u-preserve-3d animate-levitate depth-z-12">
+    <Link to={`/details/${tutorial.id}`} className="group block glass rounded-xl overflow-hidden transition-transform duration-300 hover:border-cyan-400/50 hover:-translate-y-1">
         <div className="relative">
             <img src={tutorial.image} alt={tutorial.title} className="w-full h-40 object-cover" />
             <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">

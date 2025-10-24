@@ -29,10 +29,7 @@ export default function OtpVerificationPage({ email: emailProp }) {
   } = useOtp(emailProp);
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
-      {/* Animated background */}
-      <div className="background-3d-effect" />
-
+    <div className="relative w-screen h-screen bg-bg-dark">
       {/* Theme toggle */}
       <div className="absolute top-4 right-4 z-10">
         <button

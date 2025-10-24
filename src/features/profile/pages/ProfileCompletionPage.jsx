@@ -103,10 +103,7 @@ export default function ProfileCompletionPage() {
   const skip = () => navigate("/dashboard");
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Background */}
-      <div className="background-3d-effect" />
-
+    <div className="relative flex min-h-screen items-center justify-center bg-bg-dark p-6">
       {/* Theme toggle */}
       <div className="absolute top-4 right-4 z-10">
         <button

@@ -173,7 +173,7 @@ function BusinessPageInner() {
   );
 
   const renderTutorials = () => (
-    <div className="space-y-16 u-perspective-900">
+    <div className="space-y-16">
       {renderFeaturedPlaylists()}
 
       {!deferBelowFold && (
@@ -277,9 +277,8 @@ function BusinessPageInner() {
   );
 
   return (
-    <div className="min-h-screen bg-bg-dark text-text-primary relative overflow-hidden">
-      <div className="background-3d-effect" />
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-bg-dark text-text-primary">
+      <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
         <header className="text-center my-12 relative">
           <h1 className="text-4xl md:text-5xl font-bold bg-zen-gradient text-transparent bg-clip-text mb-4">
             Explore Our Tutorials

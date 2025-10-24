@@ -3,9 +3,5 @@ services:
   ahara-app:
     build: .
     ports:
-      - "5173:5173"
-    environment:
-      - NODE_ENV=production
-    volumes:
-      - .:/app
+      - "4173:4173"
     restart: unless-stopped

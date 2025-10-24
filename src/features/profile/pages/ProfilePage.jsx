@@ -133,56 +133,47 @@ export default function ProfilePage() {
   );
 
   return (
-    <div className="relative min-h-screen bg-bg-dark text-text-primary overflow-hidden">
-      <div className="background-3d-effect" />
-      <div
-        className="relative overflow-hidden"
-        style={{
-          background:
-            "radial-gradient(1200px 400px at 10% -20%, rgba(56,189,248,0.18), transparent 60%), radial-gradient(1200px 400px at 90% -30%, rgba(168,85,247,0.20), transparent 60%)",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 md:px-8 pt-10 pb-20">
-          <div className="flex items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
-              <HaloAvatar src={profile?.avatar} />
-              <div>
-                <div className="text-2xl md:text-3xl font-semibold">
-                  {loading ? "Loading…" : profile?.name}
-                </div>
-                <div className="text-sm text-subtle">
-                  {profile?.handle} · {profile?.location}
-                </div>
-                <p className="text-sm text-slate-300 mt-2 max-w-xl">
-                  {profile?.bio}
-                </p>
-                <div className="mt-3 flex items-center gap-2 flex-wrap">
-                  <button className="btn-brand inline-flex items-center gap-2">
-                    <Edit3 size={16} /> Edit Profile
-                  </button>
-                  <button onClick={switchTheme} className="btn-ghost inline-flex items-center gap-2">
-                    <Settings size={16} /> Toggle Theme
-                  </button>
-                </div>
+    <div className="min-h-screen bg-bg-dark text-text-primary">
+      <header className="border-b border-dark bg-surface-2">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10 md:flex-row md:items-center md:justify-between md:px-8">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+            <HaloAvatar src={profile?.avatar} />
+            <div>
+              <div className="text-2xl md:text-3xl font-semibold">
+                {loading ? "Loading…" : profile?.name}
               </div>
-            </div>
-
-            <div className="hidden md:block">
-              <Segments
-                value={tab}
-                onChange={setTab}
-                items={[
-                  { key: "overview", label: "Overview" },
-                  { key: "practice", label: "Practice" },
-                  { key: "nutrition", label: "Nutrition" },
-                  { key: "achievements", label: "Achievements" },
-                  { key: "settings", label: "Settings" },
-                ]}
-              />
+              <div className="text-sm text-subtle">
+                {profile?.handle} · {profile?.location}
+              </div>
+              <p className="mt-3 max-w-xl text-sm text-slate-300">
+                {profile?.bio}
+              </p>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <button className="btn-brand inline-flex items-center gap-2">
+                  <Edit3 size={16} /> Edit Profile
+                </button>
+                <button onClick={switchTheme} className="btn-ghost inline-flex items-center gap-2">
+                  <Settings size={16} /> Toggle Theme
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="mt-6 md:hidden">
+          <div className="hidden md:block">
+            <Segments
+              value={tab}
+              onChange={setTab}
+              items={[
+                { key: "overview", label: "Overview" },
+                { key: "practice", label: "Practice" },
+                { key: "nutrition", label: "Nutrition" },
+                { key: "achievements", label: "Achievements" },
+                { key: "settings", label: "Settings" },
+              ]}
+            />
+          </div>
+
+          <div className="md:hidden">
             <Segments
               value={tab}
               onChange={setTab}
@@ -196,13 +187,13 @@ export default function ProfilePage() {
             />
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 -mt-12 pb-24">
-        <div className="glass rounded-3xl border border-dark p-8 md:p-10 shadow-3d-selected space-y-8">
+      <main className="mx-auto max-w-7xl px-4 pb-24 md:px-8">
+        <div className="mt-[-48px] rounded-3xl border border-dark bg-surface-2 p-6 shadow-lg shadow-black/20 md:mt-[-64px] md:p-10">
           {tab === "overview" && Overview}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

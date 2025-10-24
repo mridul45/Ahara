@@ -169,10 +169,8 @@ export default function DetailsPage() {
   }, [pl]);
 
   return (
-    <div className="min-h-screen bg-bg-dark text-text-primary relative overflow-hidden">
-      <div className="background-3d-effect" />
-
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-bg-dark text-text-primary">
+      <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <header className="relative flex justify-between items-center mb-8">
           <Link to="/playlists" className="text-text-secondary hover:text-text-primary transition-colors flex items-center gap-2 z-10">

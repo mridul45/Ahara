@@ -59,7 +59,7 @@ export default function Navbar({ theme, toggleTheme }) {
             className={[
               "flex items-center justify-between",
               scrolled
-                ? "liquid-glass rounded-full border border-white/10 shadow-brand my-0 px-3 md:px-4 py-2 md:py-2.5 pointer-events-auto"
+                ? "glass rounded-full border border-white/10 shadow-brand my-0 px-3 md:px-4 py-2 md:py-2.5 pointer-events-auto"
                 : "px-0 py-0",
             ].join(" ")}
           >
@@ -172,7 +172,7 @@ export default function Navbar({ theme, toggleTheme }) {
             <div
               className={[
                 "md:hidden mt-2",
-                scrolled ? "liquid-glass rounded-2xl border border-white/10 p-2 pointer-events-auto" : "border-t border-dark pt-2",
+                scrolled ? "glass rounded-2xl border border-white/10 p-2 pointer-events-auto" : "border-t border-dark pt-2",
               ].join(" ")}
             >
               <nav className="grid gap-1" aria-label="Mobile">

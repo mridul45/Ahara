@@ -1,23 +1,24 @@
-# Use official Node.js image as the base
-FROM node:20-alpine
-
-# Set working directory
+# Stage 1 – install dependencies (cached separately)
+FROM node:20-alpine AS deps
 WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Copy package.json and package-lock.json (or yarn.lock) first for better cache
-COPY package.json ./
-
-# Install dependencies
-RUN npm install --production
-
-# Copy the rest of the application code
+# Stage 2 – build the production bundle
+FROM deps AS build
 COPY . .
-
-# Build the app (if needed)
 RUN npm run build
 
-# Expose port (default Vite port)
-EXPOSE 5173
+# Stage 3 – serve the static assets with a tiny runtime
+FROM node:20-alpine AS runner
+WORKDIR /app
 
-# Start the app
-CMD ["npm", "run", "preview"]
+# Install a small static file server
+RUN npm install -g serve
+
+# Copy the compiled assets from the build stage
+COPY --from=build /app/dist ./dist
+
+EXPOSE 4173
+
+CMD ["serve", "-s", "dist", "-l", "4173", "--no-clipboard"]

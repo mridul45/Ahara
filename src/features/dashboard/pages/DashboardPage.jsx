@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie
@@ -60,36 +60,9 @@ function AIAssistantButton() {
           open ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'
         }`}
       >
-        <div className="relative glass border border-dark rounded-2xl p-4 shadow-brand overflow-hidden">
-          {/* “Liquid” sheen layers */}
-          <div
-            className="pointer-events-none absolute -top-16 -left-8 w-56 h-56 rounded-full opacity-30"
-            style={{
-              background:
-                'radial-gradient(60% 60% at 50% 50%, rgba(34,211,238,.35), transparent 70%)',
-              filter: 'blur(16px)',
-            }}
-          />
-          <div
-            className="pointer-events-none absolute -bottom-16 -right-10 w-72 h-72 rounded-full opacity-30"
-            style={{
-              background:
-                'radial-gradient(60% 60% at 50% 50%, rgba(167,139,250,.35), transparent 70%)',
-              filter: 'blur(20px)',
-            }}
-          />
-          <div
-            className="pointer-events-none absolute inset-0 -m-[10px] rounded-3xl opacity-60"
-            style={{
-              background:
-                'conic-gradient(from 180deg at 50% 50%, rgba(34,211,238,.28), rgba(167,139,250,.24), rgba(45,212,191,.28), rgba(34,211,238,.28))',
-              filter: 'blur(24px)',
-            }}
-          />
-
-          {/* Content */}
+        <div className="relative glass border border-dark rounded-2xl p-4 shadow-brand">
           <div className="relative flex items-start gap-3">
-            <div className="shrink-0 grid place-items-center w-9 h-9 rounded-xl bg-white/5 border border-dark shadow-3d-selected">
+            <div className="shrink-0 grid place-items-center w-9 h-9 rounded-xl bg-white/5 border border-dark">
               <SparklesIcon className="h-5 w-5 text-cyan-300" />
             </div>
             <div className="min-w-0">
@@ -105,32 +78,6 @@ function AIAssistantButton() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-/* ---------------- 3D BACKGROUND EFFECT ---------------- */
-function DepthParallax() {
-  const [pos, setPos] = useState({ x: 0.5, y: 0.4 });
-  useEffect(() => {
-    const onMove = (e) => {
-      const x = e.clientX / window.innerWidth;
-      const y = e.clientY / window.innerHeight;
-      setPos({ x, y });
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
-  return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden u-perspective-900">
-      <div
-        className="absolute left-[-20%] top-[-10%] h-[40rem] w-[40rem] rounded-full bg-cyan-500/10 blur-3xl"
-        style={{ transform: `translate3d(${(pos.x - 0.5) * 40}px, ${(pos.y - 0.5) * 40}px, 0)` }}
-      />
-      <div
-        className="absolute right-[-15%] bottom-[-10%] h-[35rem] w-[35rem] rounded-full bg-purple-500/10 blur-3xl"
-        style={{ transform: `translate3d(${(0.5 - pos.x) * 50}px, ${(0.5 - pos.y) * 50}px, 0)` }}
-      />
     </div>
   );
 }
@@ -236,7 +183,6 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-bg-dark text-text-primary font-sans p-4 sm:p-6 lg:p-8 relative isolate">
-      <DepthParallax />
       <div className="mx-auto max-w-screen-2xl relative z-10">
 
         {/* Header (raised z) */}
