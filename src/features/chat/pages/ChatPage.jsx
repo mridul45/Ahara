@@ -15,6 +15,7 @@ import {
   Download,
   Trash2,
 } from 'lucide-react';
+import { useTheme } from '@shared/hooks/useTheme.js';
 
 const ChatPage = () => {
   /* ===== CONFIG ===== */
@@ -29,8 +30,8 @@ const ChatPage = () => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isModelSelectorOpen, setIsModelSelectorOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [theme, setTheme] = useState('light');
   const [streaming, setStreaming] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const controllerRef = useRef(null);
   const messageInputRef = useRef(null);
@@ -49,44 +50,25 @@ const ChatPage = () => {
     const savedConvos = localStorage.getItem('vyas_conversations');
     const savedModel = localStorage.getItem('vyas_selected_model');
     const savedCollapsed = localStorage.getItem('vyas_sidebar_collapsed');
+
     if (savedConvos) setConversations(JSON.parse(savedConvos));
     if (savedModel) setSelectedModel(savedModel);
     if (savedCollapsed) setIsSidebarCollapsed(JSON.parse(savedCollapsed));
-
-    // Initialize theme
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else if (prefersDark) {
-      setTheme('dark');
-    }
   }, []);
 
   useEffect(() => {
-    // Apply theme to document
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  useEffect(() => {
-    // Save state to localStorage
+    // Persist app state
     localStorage.setItem('vyas_conversations', JSON.stringify(conversations));
     localStorage.setItem('vyas_selected_model', selectedModel);
     localStorage.setItem('vyas_sidebar_collapsed', JSON.stringify(isSidebarCollapsed));
   }, [conversations, selectedModel, isSidebarCollapsed]);
 
-  // Add Google Fonts and external scripts
+  // Load Inter font
   useEffect(() => {
     const fontLink = document.createElement('link');
     fontLink.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap";
     fontLink.rel = "stylesheet";
     document.head.appendChild(fontLink);
-
     return () => {
       document.head.removeChild(fontLink);
     };
@@ -164,39 +146,25 @@ const ChatPage = () => {
             stopStream();
             return;
           }
-          
-          // ===== THIS IS THE FIX (IMMUTABLE UPDATE) =====
+
+          // Immutable update of last assistant message
           setConversations(prev => prev.map(c => {
             if (c.id === currentConvoId) {
-              
-              // Clone the messages array
               const newMessages = [...c.messages];
-              
-              // Get the index of the last message
               const lastMsgIndex = newMessages.length - 1;
-
-              // Make sure we have a last message
               if (lastMsgIndex >= 0) {
                 const lastMsg = newMessages[lastMsgIndex];
-                
                 if (lastMsg.role === 'assistant') {
-                  // 1. Create a *new* message object
-                  const updatedLastMsg = {
-                    ...lastMsg, // 2. Copy all old properties
-                    content: lastMsg.content + data // 3. Set the new content
+                  newMessages[lastMsgIndex] = {
+                    ...lastMsg,
+                    content: lastMsg.content + data
                   };
-                  
-                  // 4. Replace the old message with the new one in the array
-                  newMessages[lastMsgIndex] = updatedLastMsg;
                 }
               }
-              
-              // Return the updated conversation
               return { ...c, messages: newMessages };
             }
             return c;
           }));
-          // =================== END OF FIX ===================
         }
       }
     } catch (err) {
@@ -206,11 +174,12 @@ const ChatPage = () => {
           if (c.id === currentConvoId) {
             const newMessages = [...c.messages];
             const lastMsg = newMessages[newMessages.length - 1];
-            
-            if (lastMsg.role === 'assistant' && lastMsg.content === '') {
-              lastMsg.content = `[Error] ${err.message || err}`;
+            if (lastMsg?.role === 'assistant' && lastMsg.content === '') {
+              newMessages[newMessages.length - 1] = {
+                ...lastMsg,
+                content: `[Error] ${err.message || err}`
+              };
             }
-            
             return { ...c, messages: newMessages };
           }
           return c;
@@ -256,7 +225,7 @@ const ChatPage = () => {
     }
   };
 
-  // Scroll to bottom of chat
+  /* ===== EFFECTS ===== */
   useEffect(() => {
     if (chatWindowRef.current) {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
@@ -284,7 +253,6 @@ const ChatPage = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [streaming]);
-
 
   /* ===== RENDER ===== */
   const renderHistory = () => {
@@ -320,7 +288,17 @@ const ChatPage = () => {
   return (
     <>
       <style>{`
-        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body {
+          font-family: 'Inter', sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          background-color: #f9fafb;
+          color: #111827;
+        }
+        html.dark body {
+          background-color: #111827;
+          color: #f9fafb;
+        }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background-color: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #374151; border-radius: 4px; }
@@ -355,12 +333,17 @@ const ChatPage = () => {
 
         #sidebar { transition: width 300ms ease-in-out; }
         .collapsible-text { transition: opacity 150ms ease, width 150ms ease; overflow: hidden; white-space: nowrap; }
-        #app.sidebar-collapsed #sidebar { width: 5rem; /* 80px */ }
+        #app.sidebar-collapsed #sidebar { width: 5rem; }
         #app.sidebar-collapsed #sidebar .collapsible-text { opacity: 0; width: 0; pointer-events: none; }
         #app.sidebar-collapsed #sidebar .justify-between { justify-content: center; }
         #app.sidebar-collapsed #sidebar .gap-3 { gap: 0; }
       `}</style>
-      <div id="app" className={`flex h-screen w-full bg-black text-gray-100 transition-colors duration-300 ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+
+      <div
+        id="app"
+        className={`flex h-screen w-full bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 transition-colors duration-300 ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}
+      >
+        {/* Sidebar */}
         <aside
           id="sidebar"
           className={`bg-gray-200 dark:bg-gray-800 w-72 p-4 flex flex-col fixed inset-y-0 left-0 transform ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-30`}
@@ -388,28 +371,44 @@ const ChatPage = () => {
           </div>
 
           <div className="mt-auto border-t border-gray-300 dark:border-gray-700 pt-4 space-y-2">
-            <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="hidden md:flex w-full items-center justify-between p-2 rounded-lg hover:bg-gray-30AN0 dark:hover:bg-gray-700 cursor-pointer">
+            <button
+              type="button"
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="hidden md:flex w-full items-center justify-between p-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+            >
               <div className="flex items-center gap-3">
                 {isSidebarCollapsed ? <ChevronsRight className="w-5 h-5 shrink-0" /> : <ChevronsLeft className="w-5 h-5 shrink-0" />}
                 <span className="text-sm collapsible-text">Collapse</span>
               </div>
             </button>
-            <button onClick={() => setIsSettingsModalOpen(true)} className="flex w-full items-center justify-between p-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">
-              <div className="flex items-center gap-3">
-                <Settings className="w-5 h-5 shrink-0" />
-                <span className="text-sm collapsible-text">Settings</span>
-              </div>
-            </button>
-            <div onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">
+
+            {/* Theme toggle */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex items-center justify-between w-full p-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+            >
               <div className="flex items-center gap-3">
                 {theme === 'light' ? <Sun className="w-5 h-5 shrink-0" /> : <Moon className="w-5 h-5 shrink-0" />}
                 <span className="text-sm collapsible-text">Theme</span>
               </div>
               <span className="text-sm text-gray-500 dark:text-gray-400 collapsible-text capitalize">{theme}</span>
-            </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsSettingsModalOpen(true)}
+              className="flex w-full items-center justify-between p-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <Settings className="w-5 h-5 shrink-0" />
+                <span className="text-sm collapsible-text">Settings</span>
+              </div>
+            </button>
           </div>
         </aside>
 
+        {/* Main */}
         <main className="flex-1 flex flex-col h-screen">
           <div className="p-4 flex items-center justify-center relative">
             <button onClick={() => setIsMobileSidebarOpen(true)} className="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 absolute left-4 top-1/2 -translate-y-1/2">
@@ -443,7 +442,7 @@ const ChatPage = () => {
             <div id="welcome-screen" className="flex-1 flex flex-col items-center justify-center p-4 md:p-6">
               <div className="relative w-full max-w-3xl mx-auto text-center">
                 <div aria-hidden="true" className="glow-blob glow-blob--brand left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-80 md:w-[520px] h-32 md:h-40"></div>
-                
+
                 <h1 className="relative text-5xl font-bold mb-4 bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
                   Hola friend!
                 </h1>
@@ -521,6 +520,7 @@ const ChatPage = () => {
         </main>
       </div>
 
+      {/* Settings Modal */}
       <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-40 ${isSettingsModalOpen ? 'modal-visible' : 'modal-hidden'}`} onClick={() => setIsSettingsModalOpen(false)}>
         <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-2xl w-full max-w-md p-6 border border-white/30 dark:border-gray-600/50" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center justify-between mb-6">

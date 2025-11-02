@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export function useTheme() {
   const [theme, setTheme] = useState(() => {
@@ -13,13 +13,22 @@ export function useTheme() {
   });
 
   useEffect(() => {
-    if (theme === 'light') {
-      document.documentElement.classList.add('light');
-      localStorage.setItem('theme', 'light');
-    } else {
-      document.documentElement.classList.remove('light');
-      localStorage.setItem('theme', 'dark');
-    }
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    const body = document.body;
+    if (!body) return;
+
+    root.classList.toggle('light', theme === 'light');
+    root.classList.toggle('dark', theme === 'dark');
+
+    body.classList.toggle('light', theme === 'light');
+    body.classList.toggle('dark', theme === 'dark');
+
+    root.dataset.theme = theme;
+
+    root.style.colorScheme = theme;
+
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {

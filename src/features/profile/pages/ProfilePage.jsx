@@ -14,12 +14,14 @@ import {
   LineItem,
   Segments,
 } from "@features/profile/components/ProfileHelpers.jsx";
+import { useTheme } from "@shared/hooks/useTheme.js";
 
 /* -------------------------- Main Profile Page -------------------------- */
 export default function ProfilePage() {
   const [tab, setTab] = useState("overview");
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
+  const { toggleTheme } = useTheme();
 
   useEffect(() => {
     const mock = {
@@ -47,8 +49,6 @@ export default function ProfilePage() {
     }, 500);
     return () => clearTimeout(t);
   }, []);
-
-  const switchTheme = () => document.documentElement.classList.toggle("light");
 
   /* -------------------------- Overview Section -------------------------- */
   const Overview = (
@@ -152,7 +152,7 @@ export default function ProfilePage() {
                 <button className="btn-brand inline-flex items-center gap-2">
                   <Edit3 size={16} /> Edit Profile
                 </button>
-                <button onClick={switchTheme} className="btn-ghost inline-flex items-center gap-2">
+                <button onClick={toggleTheme} className="btn-ghost inline-flex items-center gap-2">
                   <Settings size={16} /> Toggle Theme
                 </button>
               </div>
